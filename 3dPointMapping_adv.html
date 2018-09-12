@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>3d point mapper</title>
+        <script src="math.min.js" charset="utf-8"></script>
+        <script src="three.min.js" charset="utf-8"></script>
+        <script src="OrbitControls.js" charset="utf-8"></script>
+        <style media="screen">
+            body{
+                margin: 0px;
+                overflow: hidden;
+            }
+        </style>
+    </head>
+    <body>
+        <script>
+			var camera, scene, renderer;
+			var mesh;
+			init();
+			animate();
+			function init() {
+				camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 1000 );
+				camera.position.z = 40;
+                camera.position.y = 20;
+				scene = new THREE.Scene();
+                //
+				renderer = new THREE.WebGLRenderer( { antialias: true } );
+				renderer.setPixelRatio( window.devicePixelRatio );
+				renderer.setSize( window.innerWidth, window.innerHeight );
+				document.body.appendChild( renderer.domElement );
+				//
+                controls = new THREE.OrbitControls( camera, renderer.domElement );
+                controls.autoRotate=true;
+                controls.autoRotateSpeed = 8;
+				window.addEventListener( 'resize', onWindowResize, false );
+                //
+                scene.add( math2obj(
+                    {x: function (x,y,z) {
+                        return 2*x;
+                    },
+                    y: function (x,y,z) {
+                        return z%2?x:z;
+                    },
+                    z: function (x,y,z) {
+                        return 2*z;
+                    }},
+                    {"x": -10,"y": 0, "z": -10},
+                    {"x": 10,"y": 1, "z": 10},
+                    {"x": 1,"y": 1, "z": 1}
+                    ) );
+			}
+			function onWindowResize() {
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+				renderer.setSize( window.innerWidth, window.innerHeight );
+			}
+			function animate() {
+				requestAnimationFrame( animate );
+                controls.update();
+				renderer.render( scene, camera );
+			}
+            function math2obj(f,from,to,step) {
+                // enter 3 functions and return a three.js group of points plotted from this function
+                // f = {"x": f(x),"y": g(y), "z": h(z)}
+                // from = {"x": x,"y": y, "z": z}
+                // to = {"x": x,"y": y, "z": z}
+                // step = {"x": x,"y": y, "z": z}
+                var group = new THREE.Group();
+                for (var z = from.z; z < to.z; z+=step.z) {
+                    for (var y = from.y; y < to.y; y+=step.y) {
+                        for (var x = from.x; x < to.x; x+=step.x) {
+                            var geometry = new THREE.BoxBufferGeometry( 0.5, 0.5, 0.5 );
+                            var material = new THREE.MeshBasicMaterial( {color: 0x00ff00} );
+                            var cube = new THREE.Mesh( geometry, material );
+                            // console.log("x",x,f.x(x,y,z));
+                            // console.log("y",y,f.y(x,y,z));
+                            // console.log("z",z,f.z(x,y,z));
+                            cube.position.set(
+                                f.x(x,y,z),
+                                f.y(x,y,z),
+                                f.z(x,y,z)
+                            );
+                            group.add(cube)
+                        }
+                    }
+                    group.rotateX(-math.pi/2);
+                }
+                return group;
+            }
+		</script>
+    </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Fibonacci Zahlen visualisieren</title>
+        <script src="math.min.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <script type="text/javascript">
+            c = document.getElementById("canvas");
+            ctx = c.getContext("2d");
+            const size = 3;
+
+            function fibo(n) {
+                // fibonacci number at position x
+                if (n==0) {
+                    return 0;
+                }else if (n<=2) {
+                    return 1;
+                }else {
+                    return fibo(n-1)+fibo(n-2);
+                }
+            }
+
+            function sigma(n,end,f) {
+                // return the sum of all the results of the function f from n to end combined
+                if (n>=end) {
+                    return f(n);
+                }else {
+                    return f(n)+sigma(n+1,end,f);
+                }
+            }
+
+            function gamma(x) {
+                // intersections of the fibonacci function-graph
+                if (x<=0) {
+                    return math.matrix([0,0]);
+                }
+                else {
+                    return math.add(gamma(x-1),math.multiply(math.matrix([math.cos(x/2*math.pi),math.sin(x/2*math.pi)]),fibo(x)));
+                }
+            }
+            function epsilon(x) {
+                switch (x%4) {
+                    case 3:
+                        return math.multiply(math.matrix([0,1]),fibo(x));
+                        break;
+                    case 2:
+                        return math.matrix([0,0]);
+                        break;
+                    case 1:
+                        return math.multiply(math.matrix([-1,0]),fibo(x));
+                        break;
+                    default:
+                        return math.multiply(math.matrix([-1,1]),fibo(x));
+                }
+            }
+
+            // function draw() {
+            //     for (var i = 0; i < 13; i++) {
+            //         ctx.fillStyle='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+            //         ctx.fillRect(
+            //             0,
+            //             sigma(1,i,function (n) {return fibo(n)})-fibo(i),
+            //             fibo(i),
+            //             fibo(i)
+            //         )
+            //     }
+            // }
+            function drawRect(n) {
+                for (var i = 0; i < n; i++) {
+                    ctx.fillStyle='#'+(Math.random()*0xFFFFFF<<0).toString(16);
+                    var data = math.add(gamma(i),epsilon(i))._data;
+                    ctx.fillRect(
+                        c.width/2+data[0],c.height/2+data[1],
+                        fibo(i),fibo(i)
+                    );
+                }
+            }
+            function drawLine(n) {
+                ctx.beginPath();
+                ctx.moveTo(c.width/2,c.height/2);
+                for (var i = 0; i < n; i++) {
+                    var data = gamma(i)._data;
+                    ctx.lineTo(c.width/2+data[0]*size,c.height/2+data[1]*size);
+                }
+                ctx.stroke();
+            }
+            drawRect(20);
+            drawLine(20);
+        </script>
+    </body>
+</html>

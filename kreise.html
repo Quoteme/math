@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Kreise</title>
+        <script src="math.min.js" charset="utf-8"></script>
+        <style media="screen">
+            canvas{
+                border: 1px solid black;
+                background-color: #02fdcb;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <br>
+        <input type="range" min="1" max="100" step="1" value="50" onchange="geschwindigkeit=parseInt(this.value)">
+        <script type="text/javascript">
+            c = document.getElementById("canvas");
+            ctx = c.getContext("2d");
+
+            //
+
+                kreise = [];
+                var timer = 0;
+                var anzahl = 20;
+                var radius = 0.333;
+                var geschwindigkeit = 50;
+
+            //
+
+            function Kreis(pR,pX,pY) {
+                this.x = pX || 0;
+                this.y = pY || 0;
+                this.verzoegerung = pR || 0;
+                // this.radius = function (x) { return ((math.sin((x+this.verzoegerung)/geschwindigkeit)+1)/2)*0.9+0.1 };
+                this.radius = function (x) {return math.pow(math.sin((x+this.verzoegerung)/geschwindigkeit),6)*0.9+0.1}
+            }
+
+            function kreisZeichnen(pKreis){
+                ctx.beginPath();
+                ctx.arc(pKreis.x,pKreis.y,pKreis.radius(timer)*math.max(c.width,c.height),0,2*Math.PI);
+                ctx.stroke();
+                ctx.fill();
+            }
+
+            //
+
+            function init() {
+                ctx.globalCompositeOperation="xor";
+                ctx.fillStyle = ctx.strokeStyle = "#2e042f";
+                var abstand = (2*math.pi)/anzahl;
+                for (var i = 0; i < anzahl; i++) {
+                    kreise.push(new Kreis(
+                        i*2*math.pi*anzahl,
+                        c.width/2 + math.sin(abstand*i)*radius*c.width,
+                        c.height/2+ math.cos(abstand*i)*radius*c.height
+                    ));
+                    console.log(c.width/2 + math.sin(abstand*i)*radius*c.width);
+                }
+            }
+
+            function update() {
+                ctx.clearRect(0,0,c.width,c.height);
+                for (var i = 0; i < kreise.length; i++) {
+                    kreisZeichnen(kreise[i]);
+                }
+                timer++;
+                requestAnimationFrame(update);
+            }
+
+            init();
+            update();
+        </script>
+    </body>
+</html>

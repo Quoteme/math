@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Rule 184</title>
+        <style media="screen">
+            body{
+                /* overflow: hidden; */
+                background-color: #161633;
+                color: #eee;
+            }
+            .output img{
+                width: 100%;
+                display: block;
+                margin: 0px;
+                image-rendering: pixelated;
+            }
+        </style>
+    </head>
+    <body>
+        width: <input type="number" id="width" value="200">
+        <button type="button" id="start">start</button>
+        <button type="button" id="pause">pause/continue</button>
+        <div class="output"></div>
+        <script type="text/javascript">
+            var c = document.createElement("canvas");
+            var ctx = c.getContext("2d");
+            var width = 0;
+            var matrix = [];
+            var paused = false;
+
+            function init() {
+                width = parseInt(document.getElementById("width").value);
+                c.width = width;
+                c.height=1;
+                matrix = (function () {
+                    var arr = [];
+                    for (var x = 0; x < width; x++) {
+                         arr[x ]= Math.round(Math.random());
+                    }
+                    return arr;
+                })();
+            }
+            function getIMG() {
+                for (var x = 0; x < width; x++) {
+                    ctx.fillStyle = matrix[x]?"#000000":"#ffffff";
+                    ctx.fillRect(x,0,1,1);
+                }
+                return c.toDataURL()
+            }
+            function appendIMG(img) {
+                var tmpIMG = document.createElement("img");
+                tmpIMG.src = img;
+                console.log(img);
+                document.getElementsByClassName("output")[0].appendChild(tmpIMG);
+            }
+            function cycle() {
+                var tmpMatrix = JSON.parse(JSON.stringify(matrix));
+                for (var x = 0; x < matrix.length; x++) {
+                    // p(revious), c(urrent), n(ext)
+                    var p = x>0?matrix[x-1]:matrix[matrix.length-1];
+                    var c = matrix[x];
+                    var n = x<matrix.length?matrix[matrix.length-1]:matrix[x+1];
+                    var number = parseInt(p+""+c+""+n,2);
+                    // console.log(x,p,c,n," ",number);
+                    tmpMatrix[x]=(p+n)%2;
+                }
+                matrix = tmpMatrix;
+            }
+            init();
+            appendIMG(getIMG());
+
+            setInterval(function(){
+                if (!paused) {
+                    cycle();
+                    appendIMG(getIMG());
+                }
+            }, 25);
+        </script>
+    </body>
+</html>

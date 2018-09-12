@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Cyclic Cellular Automata</title>
+        <style media="screen">
+            body{
+                margin: 0px;
+                background-color: #161616;
+                overflow: hidden;
+            }
+            canvas{
+                width: 100%;
+                height: 100vh;
+                margin: auto;
+                image-rendering: pixelated;
+            }
+            .controls{
+                font-family: monospace;
+                position: fixed;
+                bottom:0;
+                background-color: #fff;
+                opacity: 0.6;
+                border: 1px solid black;
+                transition: 0.5s all;
+            }
+            .controls:hover{
+                opacity: 1;
+                transition: 0.5s all;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="controls">
+            width = <input id="width" type="number" value="200"><br>
+            height = <input id="height" type="number" value="200"><br>
+            states = <input id="states" type="number" value="4"><br>
+            <button type="button" onclick="start();">start</button> <button type="button" id="pauseButton" onclick="pauseButton()">paused</button>
+        </div>
+        <canvas id="canvas" width="200" height="200"></canvas>
+        <script type="text/javascript">
+            //
+            // 11.09.2018          ~+~~+~          by Luca Leon Happel
+            // https://en.wikipedia.org/wiki/Cyclic_cellular_automaton
+            //                     ~+~~+~
+            //
+            c = document.getElementById("canvas");
+            ctx = c.getContext("2d");
+
+            // UI
+            var paused = true;
+            function start() {
+                c.width = document.getElementById("width").value;
+                c.height = document.getElementById("height").value;
+                states = parseInt(document.getElementById("states").value);
+                init();
+                draw();
+            }
+            function pauseButton() {
+                paused = !paused;
+                document.getElementById('pauseButton').innerHTML = paused?"paused":"pause"
+            }
+
+            // calculations
+            var states = 8;
+            var sColors = [];
+            var matrix = [];
+            function init() {
+                sColors = (function () {
+                    // create an array with length of all possible states
+                    // and assign a color to each state.
+                    // => ["#ffffff","#ffbbff","#77b639",...]
+                    var arr = [];
+                    for (var i = 0; i < states; i++) {
+                        // var color = "#"+((1<<24)*Math.random()|0).toString(16);
+                        var color = "hsl("+(360/states)*i+",100%,50%)";
+                        arr.push(color);
+                    }
+                    return arr;
+                })();
+                matrix = (function () {
+                    // create a 2d matrix with random integers (0<=x<=states)
+                    var arr = [];
+                    for (var x = 0; x < c.width; x++) {
+                        arr[x] = [];
+                            for (var y = 0; y < c.height; y++) {
+                            arr[x][y] = Math.round(Math.random()*states);
+                            if (arr[x][y]>0) {
+                                if (Math.random()>0.5) {
+                                    arr[x][y]--;
+                                }
+                            }
+                        }
+                    }
+                    return arr;
+                })();
+
+            }
+            function draw() {
+                // draw the matrix to the canvas
+                for (var x = 0; x < c.width; x++) {
+                    for (var y = 0; y < c.height; y++) {
+                        ctx.fillStyle = sColors[matrix[x][y]];
+                        ctx.fillRect(x,y,1,1);
+                    }
+                }
+            }
+            function compare(x1,y1,x2,y2) {
+                // compare two points with each other, and return their relation:
+                // 'e' : equal
+                // 's' : point 2 is the successor of point 1
+                // 'p' : point 2 is the predecessor of point 1
+                // 'n' : point 1 is neither the successor of nor predecessors of point 2
+                // console.log(x1,y1,x2,y2);
+                if (x1<0) {
+                    x1=c.width-1;
+                }
+                if (x1>c.width-1) {
+                    x1=0;
+                }
+                if (x2<0) {
+                    x2=c.width-1;
+                }
+                if (x2>c.width-1) {
+                    x2=0;
+                }
+                if (y1<0) {
+                    y1=c.height-1;
+                }
+                if (y1>c.height-1) {
+                    y1=0;
+                }
+                if (y2<0) {
+                    y2=c.height-1;
+                }
+                if (y2>c.height-1) {
+                    y2=0;
+                }
+                var p1 = matrix[x1][y1];
+                var p2 = matrix[x2][y2];
+                if (p1==p2-1||p1==states&&p2==0) {
+                    return ['s',p2];
+                }else if (p1==p2+1||p1==0&&p2==states) {
+                    return ['p',p1];
+                }else if (p1==p2) {
+                    return ['e',p1];
+                }else {
+                    return ['n',p1];
+                }
+            }
+            function cycle() {
+                var clonedMatrix = JSON.parse(JSON.stringify(matrix));
+                for (var x = 0; x < c.width; x++) {
+                    for (var y = 0; y < c.height; y++) {
+                        // cycle through all values inside the matrix and
+                        // compare the values with their neighbours
+                        // rR => relation to the value R(ight) of this value
+                        var rRight =    compare(x,y,x+1,y);
+                        var rTop =      compare(x,y,x,y-1);
+                        var rLeft =     compare(x,y,x-1,y);
+                        var rBottom =   compare(x,y,x,y+1);
+                        // console.log(x,y,rRight,rTop,rLeft,rBottom);
+                        if (rRight[0]=='s') {
+                            clonedMatrix[x][y]=rRight[1];
+                        }
+                        if (rTop[0]=='s') {
+                            clonedMatrix[x][y]=rTop[1];
+                        }
+                        if (rBottom[0]=='s') {
+                            clonedMatrix[x][y]=rBottom[1];
+                        }
+                        if (rLeft[0]=='s') {
+                            clonedMatrix[x][y]=rLeft[1];
+                        }
+                    }
+                }
+                matrix = clonedMatrix;
+            }
+            init();
+            draw();
+            setInterval(function(){
+                if (!paused) {
+                    cycle();
+                    draw();
+                }
+            }, 25);
+        </script>
+    </body>
+</html>
