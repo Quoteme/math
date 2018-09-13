@@ -19,8 +19,8 @@
     </head>
     <body>
         width: <input type="number" id="width" value="200">
-        <button type="button" id="start">start</button>
-        <button type="button" id="pause">pause/continue</button>
+        <button type="button" id="start" onclick="startButton();">start</button>
+        <button type="button" id="pause" onclick="pauseButton();">pause/continue</button>
         <div class="output"></div>
         <script type="text/javascript">
             var c = document.createElement("canvas");
@@ -40,6 +40,7 @@
                     }
                     return arr;
                 })();
+                appendIMG(getIMG());
             }
             function getIMG() {
                 for (var x = 0; x < width; x++) {
@@ -51,7 +52,7 @@
             function appendIMG(img) {
                 var tmpIMG = document.createElement("img");
                 tmpIMG.src = img;
-                console.log(img);
+                // console.log(img);
                 document.getElementsByClassName("output")[0].appendChild(tmpIMG);
             }
             function cycle() {
@@ -60,15 +61,24 @@
                     // p(revious), c(urrent), n(ext)
                     var p = x>0?matrix[x-1]:matrix[matrix.length-1];
                     var c = matrix[x];
-                    var n = x<matrix.length?matrix[matrix.length-1]:matrix[x+1];
+                    var n = x<matrix.length-1?matrix[x+1]:matrix[0];
                     var number = parseInt(p+""+c+""+n,2);
                     // console.log(x,p,c,n," ",number);
-                    tmpMatrix[x]=(p+n)%2;
+                    if (number<=2) {
+                        tmpMatrix[x]=0;
+                    }else if (number<=5) {
+                        tmpMatrix[x]=1;
+                    }else if (number==6) {
+                        tmpMatrix[x]=0;
+                    }else if (number==7) {
+                        tmpMatrix[x]=1;
+                    }
+
                 }
                 matrix = tmpMatrix;
             }
+
             init();
-            appendIMG(getIMG());
 
             setInterval(function(){
                 if (!paused) {
@@ -76,6 +86,14 @@
                     appendIMG(getIMG());
                 }
             }, 25);
+
+            function pauseButton() {
+                paused = !paused;
+            }
+            function startButton() {
+                document.getElementsByClassName("output")[0].innerHTML = "";
+                init();
+            }
         </script>
     </body>
 </html>
