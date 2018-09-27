@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title></title>
+        <style media="screen">
+            body{
+                margin: 0px;
+                overflow: hidden;
+            }
+            canvas{
+                background-color: #000;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <script type="text/javascript">
+            c = document.getElementById("canvas");
+            ctx = c.getContext("2d");
+
+            const scaler = 10;
+            const oobMargin = 20;
+
+            var intervals = [
+                new Path([0,1.5,1/4,1/2,1/2,-1/4,-1/2,0]),
+                new Path([0,1.5,1/4,1/2,1/2,-1/4,-1/2,0,0.1]),
+                // new Path([0,0.5,-0.5]),
+                new Path()
+            ];
+
+            function Path(pValues, pColor) {
+                this.value = pValues || [...Array(Math.ceil(Math.random()*300))].map(_=>Math.random()*2);
+                this.color = '#'+(Math.random()*0xFFFFFF<<0).toString(16) || pColor;
+                this.pos = {"x":window.innerWidth/2, "y":window.innerHeight/2};
+                this.angle = 0;
+                this.crnt = 0;
+                this.next = () => {
+                    if (this.crnt <= this.value.length-2) {
+                        this.crnt++;
+                    }else {
+                        this.crnt=0;
+                    }
+                }
+                this.step = (x) => {
+                    this.angle += Math.PI*x;
+                    this.pos.x += Math.cos(this.angle)*scaler;
+                    this.pos.y -= Math.sin(this.angle)*scaler;
+                }
+                this.draw = () => {
+                    ctx.beginPath();
+                    ctx.strokeStyle = this.color;
+                    ctx.moveTo(this.pos.x,this.pos.y);
+                    this.next();
+                    this.step(this.value[this.crnt]);
+                    ctx.lineTo(this.pos.x,this.pos.y);
+                    ctx.stroke();
+                    // check oob
+                    if (this.pos.x>window.innerWidth+oobMargin) {
+                        this.pos.x = 0;
+                    }
+                    if (this.pos.x<0-oobMargin) {
+                        this.pos.x = window.innerWidth;
+                    }
+                    if (this.pos.y>window.innerHeight+oobMargin) {
+                        this.pos.y = 0;
+                    }
+                    if (this.pos.y<0-oobMargin) {
+                        this.pos.y = window.innerHeight;
+                    }
+                }
+            }
+
+            function init() {
+                c.width = window.innerWidth;
+                c.height = window.innerHeight;
+                // ctx.translate(c.width/2,c.height/2);
+                // ctx.scale(5, 5);
+                ctx.clearRect(0,0,c.width,c.height);
+            }
+
+            function update() {
+                for (var i = 0; i < intervals.length; i++) {
+                    intervals[i].draw();
+                }
+            }
+
+            init();
+            setInterval(function () {
+                update();
+            }, 1);
+        </script>
+    </body>
+</html>

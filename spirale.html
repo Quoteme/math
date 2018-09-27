@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+    <head>
+        <meta charset="utf-8">
+        <title>Spirale</title>
+        <script src="math.min.js" charset="utf-8"></script>
+    </head>
+    <body>
+        <canvas id="canvas" width="300" height="300"></canvas>
+        <script type="text/javascript">
+            c = document.getElementById("canvas");
+            ctx = c.getContext("2d");
+            var spacing = 10;
+            function init() {
+                ctx.translate(c.width/2,c.height/2);
+            }
+
+            function draw(x) {
+                ctx.beginPath();
+                var p = spirale(x)._data;
+                var q = spirale(x+1)._data;
+                ctx.moveTo(p[0],p[1]);
+                ctx.lineTo(q[0],q[1]);
+                ctx.stroke(); // Draw it
+            }
+            function spirale(x) {
+                function f(x) {
+                    // create a staircase like graph that takes a step
+                    // every 2 passed numbers
+                    return 1 + ((x-0.5)/2) - ((x-0.5)/2) % 1;
+                }
+                if (x==0) {
+                    return math.matrix([0,0]);
+                }else {
+                    return math.add(
+                        math.multiply(
+                            math.matrix([
+                                math.cos( math.pi * (3/4) + x * (math.pi/2) ),
+                                math.sin( math.pi * (3/4) + x * (math.pi/2) )
+                            ]),
+                            f(x)*spacing
+                        ),
+                        spirale(x-1)
+                    )
+                }
+            }
+            init();
+            var i=0;
+            setInterval(function(){
+                draw(i);
+                i++;
+                spacing -= 0.075;
+                if (i>=200) {
+                    ctx.clearRect(-c.width/2,-c.height/2,c.width,c.height);
+                    i=0;
+                    spacing=10;
+                }
+            }, 25);
+        </script>
+    </body>
+</html>
