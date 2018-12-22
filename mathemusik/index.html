@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>index</title>
+		<link rel="stylesheet" href="style.css" type="text/css" media="all">
+	</head>
+	<body>
+		<canvas id="graph" width="300" height="300"></canvas>
+		<br />
+		<div id="options">
+	<input type="checkbox" checked id="visualization">visualization</input>
+			<input type="checkbox" checked id="lazyDraw">lazy draw</input><br />
+			<br>
+			Time: <input id="time" type="range" min="0" max="600" step="0.1" value="0"><br />
+			Base Frequency: <input id="frequency" type="range" min="0" max="2000" step="25" value="300"><br />
+			Frequency scaler: <input id="scale" type="range" min="0" max="1000" step="25" value="200"><br />
+			Offset y: <input id="offsetY" type="range" min="-200" max="200" step="5" value="0"><br />
+			Composition:
+			<select id="composition">
+				<option value="add">add</option>
+				<option value="mult">multiply</option>
+			</select>
+			<br />
+			<button onclick="playPauseBtn();">play/pause</button>
+			<br />
+			<ul id="functions">
+				<!-- store all the functions in here -->
+			</ul>
+			<button onclick="newFunction('functions');">new</button>
+			<br />
+			<br />
+				<button>save</button>
+				<button>load</button>
+			<br / ><br />
+			Re(f(x)):[0,+infinity] = frequency<br>
+			Im(f(x)):[0,+infinity] = volume
+		</div>
+		<script src="math.min.js"></script>
+		<script src="app.js"></script>
+	</body>
+</html>

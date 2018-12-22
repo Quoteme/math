@@ -1,0 +1,16 @@
+#graph {
+	border: 3px solid black;
+	background: #161616;
+	float: left;
+}
+body{
+	background: #060606;
+	color: #eee;
+}
+#options{
+	float: right;
+}
+#functions{
+	border: 3px solid black;
+	background: #161616;
+}
