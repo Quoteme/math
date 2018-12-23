@@ -52,9 +52,15 @@ var base = {
 	"x": 0,
 	"y": c.height*(3/4)
 }
+var step = 1;
 var offsetY = document.getElementById("offsetY");
 var functions = [];
 var playing = false;
+var updated = false; // track, if an update occured
+
+const changeStep = (e) => {
+	step = e;
+}
 
 const newFunction = (trgt, expr, colr) => {
 	// PARAMETERS
@@ -141,21 +147,23 @@ const drawFuncs = (func, strt, stop) => {
 		// stop = stop where the functions should not be plotted anymore
 	if (document.getElementById("lazyDraw").checked){
 		for (var i=0; i<func.length; i++) {
-			drawFuncDots(func[i][0],func[i][1],strt,stop);
+			drawFuncDots(func[i][0],func[i][1],strt,stop,step);
 		}
 	}else{
 		for (var i=0; i<func.length; i++) {
-			drawFuncLine(func[i][0],func[i][1],strt,stop);
+			drawFuncLine(func[i][0],func[i][1],strt,stop,step);
 		}
 	}
 }
 
-const drawFuncDots = (func, colr, bgin, end) => {
+const drawFuncDots = (func, colr, bgin, end, step) => {
 	// PARAMETERS
 		// bgin = beginning of the graph on the x axis
 		// end = length of the graph
+	if(typeof step=="undefined")
+		step=1;
 	ctx.fillStyle = colr;
-	for (var i=bgin; i<end*scale.x ; i++) {
+	for (var i=bgin; i<end*scale.x ; i+=step) {
 		let value = func.eval( {"x":math.complex(i/scale.x,0)} );
 		math.add(value,math.complex(0,0));
 		ctx.globalAlpha = value.im>0?value.im:0;
@@ -164,7 +172,7 @@ const drawFuncDots = (func, colr, bgin, end) => {
 	ctx.globalAlpha=1;
 }
 
-const drawFuncLine = (func, colr, bgin, end) => {
+const drawFuncLine = (func, colr, bgin, end, step) => {
 	// PARAMETERS
 		// bgin = beginning of the graph on the x axis
 		// end = length of the graph
@@ -177,15 +185,19 @@ const drawFuncLine = (func, colr, bgin, end) => {
 	// draw first start of the function
 		ctx.moveTo( 0,prev );
 
-	for (var i=bgin; i<end*scale.x; i++) {
+	if(typeof step=="undefined")
+		step=1;
+	for (var i=bgin; i<end*scale.x; i+=step) {
 		ctx.beginPath();
 		next = func.eval( {"x":math.complex(i/scale.x,0)} );
-		ctx.lineWidth = next.im;
+		//ctx.lineWidth = next.im;
+		ctx.globalAlpha=next.im;
 		ctx.moveTo( i-bgin, base.y+parseFloat(offsetY.value)-prev.re*scale.y );
-		ctx.lineTo( i-bgin, base.y+parseFloat(offsetY.value)-next.re*scale.y );
+		ctx.lineTo( i-bgin+step, base.y+parseFloat(offsetY.value)-next.re*scale.y );
 		ctx.stroke();
 		prev = next;
 	}
+	ctx.globalAlpha=1;
 }
 
 const drawGrid = () => {
@@ -222,6 +234,7 @@ const drawCrntTime = (time) => {
 const update = () => {
 	// update the function-cache
 	functions = updateFuncs();
+	updated = true;
 }
 
 const getFunctionValues = (funcs, param) => {
@@ -232,17 +245,17 @@ const getFunctionValues = (funcs, param) => {
 	return funcs.map(x=>x[0]).map(x=>x.eval({"x":param}))
 }
 
-const loop = () => {
+const render = () => {
 	ctx.clearRect(0,0,c.width,c.height);
 	drawGrid();
-	if (document.getElementById("visualization").checked){
-		drawFuncs(
-			functions,
-			parseFloat(time.value)*scale.x,
-			parseFloat(time.value)*scale.x+c.width/scale.x
-		)
-	}
-	//drawCrntTime(parseFloat(time.value));
+	drawFuncs(
+		functions,
+		parseFloat(time.value)*scale.x,
+		parseFloat(time.value)*scale.x+c.width/scale.x
+	)
+}
+
+const updateAudio = () => {
 	let funcValues = getFunctionValues(
 		functions,
 		math.complex(parseFloat(time.value),0)
@@ -266,8 +279,6 @@ const loop = () => {
 		default:
 			res = 0;
 	}
-
-
 	setAudioFreq(
 		res.re * parseFloat(
 			soundScale.value
@@ -275,10 +286,29 @@ const loop = () => {
 			document.getElementById("frequency").value
 		));
 	setAudioVol(res.im);
-
-	requestAnimationFrame(loop)
 }
-loop();
+
+const save = (id) =>{
+	let f = JSON.stringify(getFuncs(id));
+	download("untitled.json",f);
+}
+
+const load = () =>{
+}
+
+const fileUploaded = (e) => {
+	console.log(e);
+	let files = e.target.files;
+	if (files) {
+		for (var i=0, f; f=files[i]; i++) {
+			let r = new FileReader();
+			r.onload = function(inp) {
+				console.log(r.result);
+			}
+			r.readAsText(f);
+		}
+	}
+}
 
 c.addEventListener("wheel", function(e){
 	scale.y += e.deltaY*0.1;
@@ -294,8 +324,28 @@ c.addEventListener("wheel", function(e){
 
 setInterval(
 	function(){
+		if (document.getElementById("visualization").checked || updated){
+			render();
+			updated = false;
+		}
 		if (playing){
 			time.value=parseFloat(time.value)+0.1;
 		}
+		updateAudio();
 	},
 100);
+
+function download(filename, text) {
+//	// Start file download.
+//	download("hello.txt","This is the content of my file :)");
+	var element = document.createElement('a');
+	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+	element.setAttribute('download', filename);
+
+	element.style.display = 'none';
+	document.body.appendChild(element);
+
+	element.click();
+
+	document.body.removeChild(element);
+}
