@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>restring</title>
+		<style type="text/css" media="screen">
+			canvas{
+				border: 1px solid black;
+				min-width: 400px;
+				min-height: 400px;
+				image-rendering: pixelated;
+				float: left;
+			}
+			table{
+				float: right;
+			}
+		</style>
+	</head>
+	<body>
+		<input onchange="changeP()" type="number" id="p" value="2" min="2">
+		<button onclick="changeP()">update</button>
+		<table id="colors"></table>
+		<br>
+		<canvas id="canvas" width="10px" height="10px"></canvas>
+		<script charset="utf-8">
+			var c =  document.getElementById("canvas");
+			var ctx = c.getContext("2d");
+			var colors = document.getElementById("colors");
+
+			const getP = ()=> parseInt(document.getElementById("p").value);
+			const changeP = (p=getP())=>{
+				listValues(p);
+				update(p);
+			}
+
+			const listValues = (p,clrs)=>{
+				// detele previous listings
+				colors.innerHTML="";
+				// generate template for new value
+				function CLR (num=0,clr="#000000"){
+					this.tr  = document.createElement("TR");
+					this.num = document.createElement("TD");
+						this.num.innerHTML = num;
+					this.val = document.createElement("TD");
+					this.inp = document.createElement("INPUT");
+						this.inp.type = "color";
+						this.inp.className="clr";
+						this.inp.value = clr;
+
+						this.val.appendChild(this.inp);
+						this.tr.appendChild(this.num);
+						this.tr.appendChild(this.val);
+				}
+
+				for( var i=0; i<p; i++){
+					colors.appendChild( new CLR(
+							i,
+							rgbToHex(
+								Math.round((i/p)*126)+(i==0?255:0),
+								Math.round((i/p)*126)+(i==0?255:0),
+								Math.round((i/p)*126)+(i==0?255:0))
+						).tr
+					);
+				}
+			}
+
+			const listClrs = ()=> Array.from(document.getElementsByClassName("clr")).map(x=>x.value);
+
+			const calc = (
+				p=2,
+				f=(x)=>x**2
+			)=> new Array(p)
+				.fill(0)
+				.map( (x,i)=> new Array(p)
+					.fill(0)
+					.map( (y,j)=> i*j%p) )
+
+			const draw = (v,clr)=>v.forEach( (x,i)=>x.forEach( (y,j)=>{
+				ctx.fillStyle=clr[y];
+				ctx.fillRect(i,j,1,1);
+			} ) )
+
+			const resize = (p=2)=>c.width = c.height = p;
+
+			const update = (p=getP())=>{
+				resize(p);
+				draw(
+					calc(p),
+					listClrs()
+				)
+			}
+
+			const rgbToHex = (r, g, b) => '#' + [r, g, b]
+				.map(x => x.toString(16).padStart(2, '0')).join('')
+
+			// init
+				listValues(getP());
+				update();
+		</script>
+	</body>
+</html>

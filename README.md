@@ -32,6 +32,10 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 
 ![randomwalk.png](randomwalk.png)
 
+##### [restring.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/restring.html)
+
+![restring.gif](restring.gif)
+
 ##### [mathemusik/index.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/mathemusik/index.html)
 
 ![mathemusik/demo.png](mathemusik/demo.png)

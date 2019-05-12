@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>index</title>
+		<style type="text/css" media="screen">
+			textarea{
+				min-width: 300px;
+				min-height: 100px;
+			}
+			canvas{
+				background: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADwAAAAKCAYAAADo3z3CAAABhWlDQ1BJQ0MgcHJvZmlsZQAAKJF9kT1Iw0AcxV9Ti6IVBTuIOGSo4mChqIijVqEIFUKt0KqDyaVf0KQhSXFxFFwLDn4sVh1cnHV1cBUEwQ8QF1cnRRcp8X9NoUWMB8f9eHfvcfcOEGolplkdUUDTbTMZj4npzKrY+YoAetCPMURlZhlzkpSA5/i6h4+vdxGe5X3uz9GrZi0G+ETiWWaYNvEG8fSmbXDeJw6xgqwSnxOPm3RB4keuKy6/cc43WOCZITOVnCcOEYv5NlbamBVMjXiKOKxqOuULaZdVzluctVKFNe/JXxjM6ivLXKc5jDgWsQQJIhRUUEQJNiK06qRYSNJ+zMM/1PBL5FLIVQQjxwLK0CA3/OB/8LtbKzc54SYFY0DgxXE+RoDOXaBedZzvY8epnwD+Z+BKb/nLNWDmk/RqSwsfAX3bwMV1S1P2gMsdYPDJkE25IflpCrkc8H5G35QBBm6B7jW3t+Y+Th+AFHWVuAEODoHRPGWve7y7q723f880+/sBkypytKTHHVkAAAAGYktHRAAWABYAFvqcs84AAAAJcEhZcwAALiMAAC4jAXilP3YAAAAHdElNRQfjBQsQKiucFF3lAAAAGXRFWHRDb21tZW50AENyZWF0ZWQgd2l0aCBHSU1QV4EOFwAAADFJREFUSMdj/P//vwPDCAHi4uL7mRhGGBj18KiHRz086uFRD496eBABRjExsf8jycMApGAFleZMZZAAAAAASUVORK5CYII=');
+				border: 1px solid #000;
+			}
+			#graph{
+				background: #eee;
+				display: inline;
+			}
+		</style>
+		<script src="lineareAlgebra.js" charset="utf-8"></script>
+	</head>
+	<body>
+		<h3>Input</h3>
+		<textarea id="input">
+[
+[0,0,2,8,14,12],
+[0,0,2,4]
+]
+		</textarea>
+		<div id="visInput"></div>
+		<br>
+		<button onclick="addition();">add</button>
+		<button onclick="subtraction();">subtract</button>
+		<button onclick="multiplicaiton();">multiply</button>
+		<button onclick="division();">divide</button>
+		<br>
+		<h3>Output</h3>
+		<textarea id="output">
+		</textarea>
+		<div id="visOutput"></div>
+		<h3>Graph</h3>
+		<div id="graph">
+			<canvas id="canvas" width="300px" height="200px"></canvas>
+		</div>
+
+		<script charset="utf-8">
+			// display polynomials in p on element e
+			const display = (p, elem)=>elem.innerHTML = p.map(q=>polynom2html(q)).join("<br>");
+
+			var input = document.getElementById("input");
+			var visinput = document.getElementById("visInput");
+			var output = document.getElementById("output");
+			var visoutput = document.getElementById("visOutput");
+
+			const getInput = ()=>JSON.parse(input.value);
+			const getOutput = ()=>JSON.parse(output.value);
+			const setOutput = (o)=>{
+				output.innerHTML = JSON.stringify(o);
+				display(
+					o,
+					visoutput
+				)
+			}
+
+			setInterval( ()=>{
+				display(
+					getInput(),
+					visinput
+				)
+			},
+			1000);
+
+			// buttons
+				const addition = ()=>{
+					setOutput( [add(getInput())] )
+					plotall();
+				};
+				const subtraction = ()=>{
+					setOutput( [sub(getInput())] )
+					plotall();
+				};
+				const multiplicaiton = ()=>{
+					setOutput( [mul(getInput())] )
+					plotall();
+				};
+				const division = ()=>{
+					setOutput( [div(getInput()[0],getInput()[1])] )
+					plotall();
+				};
+
+			// init
+				display(
+					getInput(),
+					visinput
+				)
+
+			// GRAPHING
+				// 30 px wide is one unit,
+				// 10 px tall is one unit,
+				const unit = [30,10];
+				var canvas = document.getElementById("canvas");
+				var ctx = canvas.getContext("2d");
+				// center the canvas
+					ctx.transform(1, 0, 0, -1, 0, canvas.height)
+					ctx.translate(canvas.width/2, canvas.height/2);
+					ctx.lineWidth = 2;
+
+				// COLORS
+					var colors = {
+						"inp":[
+							"#005C81",
+							"#4AAFCD",
+						],
+						"out": [
+							"#E24D35",
+							"#A0C953",
+						]
+					}
+				// plot all the functions currently on screen
+				const plotall = ()=>{
+					let inp = getInput();
+					let out = getOutput();
+
+					ctx.clearRect(-canvas.width/2,-canvas.height/2,canvas.width,canvas.height)
+
+					plot( inp.map( x=>calc(x) ),colors["inp"] );
+					plot( out.map( x=>calc(x) ),colors["out"] );
+				}
+				// graph all calculations with colorspace c
+				const plot = (c, clr)=>c.forEach( (p,i)=>{
+					ctx.fillStyle = clr[i%clr.length];
+					ctx.strokeStyle = clr[i%clr.length];
+					graph(p);
+				})
+				const graph = (c=calc())=>{
+					//c.forEach( p=>ctx.fillRect(p[0]*unit[0],p[1]*unit[1],2,2) );
+					ctx.beginPath();
+					ctx.moveTo(c[0][0]*unit[0],c[0][1]*unit[1]);
+					c.forEach( p=>ctx.lineTo(p[0]*unit[0],p[1]*unit[1]) );
+					ctx.stroke();
+				}
+				// calculate the values for the function p on the interval i with a stepsize of s
+				const calc = (p=[0], i=[-5,5], s=unit[0])=> new Array((i[1]-i[0])*s).fill(0).map( (x,j)=>[
+					j/s-i[1],
+					polcalc(p,j/s-i[1])
+				]);
+				const polcalc = (p,x) => p.map( (k,i)=>k*(x**i) ).reduce( (a,b)=>a+b );
+		</script>
+	</body>
+</html>

@@ -52,7 +52,7 @@ var base = {
 	"x": 0,
 	"y": c.height*(3/4)
 }
-var step = 1;
+var step = 12;
 var offsetY = document.getElementById("offsetY");
 var functions = [];
 var playing = false;
@@ -83,9 +83,9 @@ const newFunction = (trgt, expr, colr) => {
 		color.classList.add("colr");
 
 	// VALUE ASSIGNMENT
-		expression.value = "1+i" || expr;
+		expression.value = expr || "1+i";
 		expression.onchange = () => {update();};
-		color.value = "#"+parseInt(Math.random()*0xFFFFFF).toString(16) || colr;
+		color.value = colr || "#"+parseInt(Math.random()*0xFFFFFF).toString(16);
 		color.onchange = () => {update();};
 		// remove button
 			removeButton.innerHTML = "X";
@@ -293,17 +293,17 @@ const save = (id) =>{
 	download("untitled.json",f);
 }
 
-const load = () =>{
-}
-
 const fileUploaded = (e) => {
-	console.log(e);
-	let files = e.target.files;
+	let files = e.files;
 	if (files) {
 		for (var i=0, f; f=files[i]; i++) {
-			let r = new FileReader();
-			r.onload = function(inp) {
-				console.log(r.result);
+			const r = new FileReader();
+			r.onload = (e) => {
+				let data = JSON.parse(e.target.result);
+				console.log(data);
+				for (var i=0; i<data.length; i++) {
+					newFunction("functions", data[i][0], data[i][1]);
+				}
 			}
 			r.readAsText(f);
 		}
@@ -319,6 +319,7 @@ c.addEventListener("wheel", function(e){
 		scale.y =0.1;
 	//scale.x += e.deltaX*0.1;
 	time.value = parseFloat(time.value)+e.deltaX*0.1;
+	e.preventDefault;
 
 }, false);
 
