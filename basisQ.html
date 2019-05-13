@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>basisQ</title>
+		<style type="text/css" media="screen">
+			canvas{
+				border: 1px solid black;
+				background: #363636;
+			}
+			body{
+				background: #161616;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="number" id="depth" value="1" onchange="generalUpdate()">
+		<input type="number" id="s" value="0" onchange="generalUpdate()">
+		<input type="number" id="e" value="5" onchange="generalUpdate()">
+		<input type="number" id="num" value="3.131592" onchange="generalUpdate()">
+		<button onclick="update([1].concat(primes));">update</button>
+		<br>
+		<canvas id="canvas" width="600px" height="600px"></canvas>
+		<script charset="utf-8">
+			var c = document.getElementById("canvas");
+			var ctx = c.getContext("2d");
+
+			const draw = (p, s=0, e=3, num=Math.E)=>{
+				num = parseFloat(num);
+				let m = 0;
+				let met = false;
+				p.forEach(x=>{
+					let r = 2;
+					let vals = new Array(x*(e-s)+1).fill(0).map( (y,j)=>s+j/x );
+					let cls = closest( vals, num);
+					vals.forEach( (v,i)=>{
+						if(v!=cls)
+							if(!Math.ceil(v%1))
+								ctx.fillStyle = "blue";
+							else
+								ctx.fillStyle = "black";
+						else{
+							if( !met )
+								ctx.fillStyle = "red";
+							else
+								ctx.fillStyle = "green";
+							if( v==num )
+								met = true;
+						}
+						ctx.beginPath();
+						ctx.arc(
+							c.width/(e-s)*v,
+							m,
+							r,r,
+							Math.PI*2
+						);
+						ctx.closePath();
+						ctx.fill();
+					})
+					m+=r*2+3;
+				})
+			}
+			var closest = (arr, goal)=> arr.reduce((prev, curr)=> (Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev));
+			const clear = ()=> ctx.clearRect(0,0,c.width,c.height);
+			const update = (p,s,e,num)=>{
+				clear();
+				draw(p,s,e,num);
+			}
+			const generalUpdate = ()=> update(new Array(80).fill(0).map((x,i)=>document.getElementById("depth").value*(i+1)),document.getElementById('s').value,document.getElementById('e').value,document.getElementById('num').value)
+
+			const primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997];
+		</script>
+	</body>
+</html>
