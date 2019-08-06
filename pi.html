@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>pi</title>
+		<style type="text/css" media="screen">
+			canvas{
+				border: 1px solid black;
+			}
+		</style>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td><input type="range" id="n" value="2" min="2" max="15" step="1" onchange="nchange(this.value)"></td>
+				<td>\( n= \)<span id="nval"></span></td>
+			</tr>
+			<tr>
+				<td>\( pathlength(n)= \)</td>
+				<td><span id="pathlength"></span></td>
+			</tr>
+			<tr>
+				<td>\( \frac{\pi}{2} \approx \)</td>
+				<td>1.5707963267948966</td>
+			</tr>
+		</table>
+		<canvas id="c" width='300' height='300'></canvas>
+
+		<p>
+			<h3>Formula</h3>
+			Let \( n \in \mathbb{N}_{\ge 2} \) <br>
+			Let \( S_2 = [ \begin{pmatrix} 1 \\ 0 \end{pmatrix}, \begin{pmatrix} 0 \\ 1 \end{pmatrix}],
+			\quad S_{n+1} = [S_{n_1}, \frac{S_{n_1}+S_{n_{1+1}}}{| S_{n_1}+S_{n_{1+1}} | }, S_{n_2}, \dots, \frac{S_{n_k}+S_{n_{k+1}}}{| S_{n_k}+S_{n_{k+1}} | }, S_{n_k} ] \) <br>
+			Let $$ pathlength(n) = \sum^{Card(S(n)-1)}_{i=1} |S_{n_i+1}-S_{n_i}| $$
+			$$ \Rightarrow \frac{\pi}{2} = \lim_{n\rightarrow \infty} pathlength(n) $$
+		</p>
+
+		<script charset="utf-8">
+			const c = document.getElementById('c');
+			var ctx = c.getContext('2d');
+			const w = c.width;
+			const h = c.height;
+
+			ctx.transform(1, 0, 0, -1, 0, h)
+
+			// returns points on a circle unsing the Happel circle-point approximation algorithm
+			const S = (n) =>{
+				// precalc -- return precalculated values in order to save processing time
+				if (precalc[n]!=undefined)
+					return precalc[n];
+				// actual calculation
+				if(n<=2){
+					return [ [1,0], [0,1] ];
+				}else{
+					let P = S(n-1)
+						.slice( 0,-1 )
+						.map( (e,i) => [ e,vecMult( 1/(Math.hypot(...vecAdd(S(n-1)[i], S(n-1)[i+1]))), vecAdd(S(n-1)[i], S(n-1)[i+1]) ) ])
+						.concat( [[S(n-1)[S(n-1).length-1]]] )
+						.flat()
+					return P
+				}
+			}
+			const pathlength = p => p.map( (e,i) => i==p.length-1?0:Math.hypot(...vecMin(p[i],p[i+1])) ).reduce((x,y)=>x+y, 0)
+			const vecAdd = (x,y) => x.map( (e,i) => e+y[i]);
+			const vecMin = (x,y) => x.map( (e,i) => e-y[i])
+			const vecMult= (s,x) => x.map( e => s*e);
+
+			// draw the returned points from S(n) onto the canvas
+			const draw = p => {
+				ctx.fillStyle = '#ff0000';
+				p.forEach( e => ctx.fillRect( e[0]*w-1.5,e[1]*h-1.5,3,3 ) )
+
+				ctx.beginPath();
+				ctx.moveTo(p[0][0]*w, p[0][1]*h);
+				p.forEach( e => ctx.lineTo(e[0]*w, e[1]*h) )
+				ctx.stroke();
+			}
+
+			// load in the precalculated values for the sequence
+			precalc = {}
+			fetch ( 'pi_precalc.json' )
+				.then( j => j.json() )
+				.then( r => precalc = r)
+
+			// UI stuff
+			const nchange = n => {
+				document.getElementById('nval').innerHTML = n;
+				ctx.clearRect(0,0,w,h);
+				draw(S(n));
+				document.getElementById('pathlength').innerHTML = pathlength(S(n));
+			}
+			// init after page loaded
+			document.addEventListener('DOMContentLoaded', function() {
+				nchange(document.getElementById('n').value)
+			}, false);
+		</script>
+	</body>
+</html>
