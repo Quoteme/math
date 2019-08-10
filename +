@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>e</title>
+		<style type="text/css" media="screen">
+			:root{
+				--clrbg		: #FFF5EA;
+				--clrfrm1	: #23AD7B;
+				--clrtxt	: #26303D;
+				--clrfrm2 	: #FF714F;
+				--clrfrm3	: #FFCC63;
+			}
+			body{
+				color: var(--clrtxt);
+				background: var(--clrbg);
+			}
+			.idea{
+				border: 3px solid black
+			}
+			.proposition{
+				border: 3px solid var(--clrfrm1);
+				background: rgba(255,255,255,0.5);
+			}
+			canvas{
+				border: 1px solid black;
+				background: #ffffff;
+			}
+			#detmatrix{
+				width: 300px;
+				height: 300px;
+				overflow: scroll
+			}
+		</style>
+		<script src='math.min.js' async></script>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+	</head>
+	<body>
+		<div id="det" class="idea">
+			<h3>Happel'sche Exponential-Determinantendarstellung</h3>
+			<div class="proposition">
+				$$
+					\lim_{n\rightarrow 0} det \begin{bmatrix} 1+n & 0 \\ 0 & \ddots \end{bmatrix}
+					= \lim_{n\rightarrow \infty} det \underbrace{ \begin{bmatrix} 1+\frac{1}{n} & 0 \\ 0 & \ddots \end{bmatrix} }_{n}
+					= e
+				$$
+				based on:
+				$$ e = \lim_{n\rightarrow \infty} \Big( 1+\frac{1}{n} \Big)^n $$
+			</div>
+			<div class="explanation">
+				<input type="range" id="detslider" value="1" min="1" max="100" step="1"><span id="detval"></span>
+				<canvas id="detc" width="300px" height="300px"></canvas>
+				<br>
+				<p>
+					Each of these Points \( p \in Points\) represents a collumn of the matrix
+					\( M(n) = \underbrace{ \begin{bmatrix} 1+\frac{1}{n} & 0 \\ 0 & \ddots \end{bmatrix}}_{n} \)
+					with a freely chosen \(n \in \mathbb{N}\). To represent these \( n \) dimensional vectors
+					in \( \mathbb{R}^2 \), the <a href="meh">Happel'sche n-Dimensionalprojektion</a> is used.
+					This means, that because every Vector \( v \) which represents a Collumn of \(M(n)\) has all values
+					\( 0 \) except for one, that every angle represented in the interactiv graphic above represents another dimension.
+					Therefor all points above lie on different basisvectors (ie. in different dimensions) and therefor only their
+					distance from the \( 0 \)-Vector determines their one remaining value.
+
+					Now, if we imagine that all these points lie on different dimensions, we only need to measure the area that is
+					spanned by these points using the determinant and this results in an increasingly accurate measurement for \( e \),
+					that is exactly \(e\), if we take the limit of \( \lim_{n\rightarrow \infty} M(n) \).
+				</p>
+			</div>
+		</div>
+		<div class="idea">
+			<div class="proposition">
+				$$ e^x
+					= \lim_{n\rightarrow \infty} \Big( 1+\frac{x}{n} \Big)^n
+					= \lim_{n\rightarrow \infty} det \underbrace{ \begin{bmatrix} 1+\frac{x}{n} & 0 \\ 0 & \ddots \end{bmatrix} }_{n}
+				$$
+			</div>
+			<div class="explanation">
+				<p>
+					Der oben genannte Prozess erlaubt es einem, die Zahl \( e \) zu errechnen. Dies ist jedoch bisher von keinem
+					ersichtlichen Nutzen, da diese Konstante für sich gesehen keinen Nutzen hat.
+					Die Warheit ist, dass \( e \) ein Hindernis ist, welches man zu umgehen versucht um ein Tieferliegendes Ziel
+					zu erreichen.
+					Dieses Ziel ist einen <a href="https://de.wikipedia.org/wiki/Gruppenhomomorphismus" target="_blank">Gruppenhomomorphismus</a>
+					zwischen \( + \) und \( \cdot \) zu finden, welcher grob gesagt es uns erlauben wird, die Regeln der Addition auf
+					bestimmte Multiplikationen anzuwenden.
+					<div class="example">
+						\( 10 \cdot 10 \cdot 10 = 10^{1+1+1} = 10^3 \)
+					</div>
+					Möchte man diese Technik jedoch erweitern, sodass dies für jede Multiplikation zwischen verschiedenen Zahlen funktioniert,
+					so muss mann folgendes machen:
+					<div class="example">
+						\( 10 \cdot 7 = e^{ln(10)} \cdot e^{ln(7)} = e^{ln(10)+ln(7)} \)
+					</div>
+					Hierfür gibt es eine gute geometrische Bedeutung, welche durch <a href="#log">Logarithmen</a> deutlich wird.
+					Anders gesagt, wird \( 10 \) zuerst als Flächeninhalt eines \( \mathbb{R}^\infty \)
+					(unendlich-dimensionalen Raumes), auf dem entlang jeden Basisvektors eine Seite von "\( 1+\frac{x}{\infty}\)"
+					aufgespannt ist gesehen. Nun findet man heraus, wie lang diese Seiten sein müssen, damit 10 herauskommt und erhält somit \( ln(10) \).
+					Wenn man dies hat, kann man das selbe nun mit 7 tuen um \( ln(7) \) zu erhalten, worauf hin man nur noch
+					das selbe geometrische Konstrukt bauen muss wie vorher, nur dass nun die Seitenlänge \(ln(10)+ln(7)\) sein muss.
+					Da wir wissen, dass \( e^x \cdot e^y = e^{x+y} \) gilt, wissen wir, dass diese geometrische Konstruktion nun den selben Flächeninhalt
+					hat, wie \(10\cdot 7 \) und somit hat man erfolgreich eine Multiplikationen ( \(10\cdot 7\) ) in eine Addition
+					(\(ln(10)+ln(7)\)) umgewandelt.
+				</p>
+				<canvas id="grphom" width="300px" height="300px"></canvas>
+			</div>
+		</div>
+		<div class="idea" id="log">
+			<h3>Logarithmus</h3>
+			Hierbei steht \( ln \) für den
+			<a href="https://de.wikipedia.org/wiki/Logarithmus#Nat%C3%BCrlicher_Logarithmus" target="_blank">Logarithmus naturalis</a>
+			welcher folgendermaßen definiert ist:
+			<div class="proposition">
+				$$ e^x = y \Leftrightarrow x = ln(y) $$
+			</div>
+			Dies kann man geometrisch dank der <a href="#det">Exponential-Determinantendarstellung</a>
+			$$
+				\lim_{n\rightarrow \infty} det \underbrace{ \begin{bmatrix} 1+\frac{x}{n} & 0 \\ 0 & \ddots \end{bmatrix} }_{n} = e^x
+			$$
+			betrachten.
+			Setzt man die Definition des Logarithmus in die Exponential-Determinantendarstellung ein, so erhält man:
+			$$
+				x = ln(e^x) = ln \Bigg( \lim_{n\rightarrow \infty} det \underbrace{ \begin{bmatrix} 1+\frac{x}{n} & 0 \\ 0 & \ddots \end{bmatrix} }_{n} \Bigg)
+			$$
+			Also kann der \(ln (y), \> y\in K \) Operator als eine Funktion gesehen werden, welche, wenn man \( \infty \) Dimensionen hat
+			auf denen jeweils ein "\( 1+\frac{x}{\infty} \)" langer Strang entlang eines Basisvektors geht und davon den aufgespannten
+			Flächeninhalt nimmt, so wird diesem Flächeninhalt mittels des natürlichen Logarithmus das zugehörige \( x \)-Wert zugeordnet,
+			welcher diesen Flächeninhalt auswirkte.
+		</div>
+
+		<script charset="utf-8">
+			document.getElementById("detslider").onchange = (e) => {
+				let v = e.srcElement.value;
+				let c = document.getElementById("detc");
+				let ctx = c.getContext("2d");
+
+				let p = new Array(parseInt(v))
+						.fill(0)
+						.map( e => 1+1/v )
+						.map( (e,i) => new Array(i).fill(0).concat( e ).concat( new Array( v-i-1 ).fill(0) ) )
+
+				let unit = c.width/5;
+				ctx.clearRect(0,0,c.width,c.height);
+				ctx.strokeStyle = 'red';
+				ctx.beginPath();
+					ctx.moveTo(c.width/2,c.height/2);
+					ctx.lineTo(unit+c.width/2,c.height/2);
+				ctx.stroke();
+				ctx.strokeStyle = 'blue';
+				ctx.beginPath();
+					ctx.moveTo(c.width/2,c.height/2);
+					ctx.lineTo(c.width/2,unit+c.height/2);
+				ctx.stroke();
+				let proj = p.map( e => higherdproj2d(e) );
+					proj.forEach( e => ctx.fillRect(e[0]*unit+c.width/2, e[1]*unit+c.height/2, 2,2) )
+
+				let val = document.getElementById("detval");
+				val.innerHTML = `\\( n = ${v},\\quad det(M(n))=${ math.det(p) } \\)`;
+				MathJax.Hub.Queue(["Typeset",MathJax.Hub,val]);
+			}
+
+			const grphom = () => {
+				let c = document.getElementById("grphom");
+				let ctx = c.getContext("2d");
+				ctx.beginPath();
+				ctx.moveTo(border, border);
+				ctx.lineTo(3, unit+border)
+				ctx.beginPath();
+				ctx.arc(3, 3, c.width/5 * Math.log(10), 0, 1/2 * Math.PI);
+				ctx.lineTo(3,3);
+				ctx.fill();
+			}
+
+			const higherdproj2d = (p) => {
+				// project a point in n >= 2 dimensions to a 2d point
+				let l = p.length-1;
+				let proj = math.transpose( p.map( (e,i) => [ Math.cos(i*(Math.PI/2)/l), Math.sin(i*(Math.PI/2)/l) ] ))
+				return math.multiply(proj, p);
+			}
+
+			const mat2latex = (m) => '\\begin{bmatrix}'+m.map( r => r.map( e=>Math.round(e*1000)/1000).join('&') ).join(' \\\\ ')+'\\end{bmatrix}';
+		</script>
+	</body>
+</html>
