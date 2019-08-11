@@ -39,3 +39,7 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 ##### [mathemusik/index.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/mathemusik/index.html)
 
 ![mathemusik/demo.png](mathemusik/demo.png)
+
+##### [pi.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/pi.html)
+
+##### [e.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/e.html)
