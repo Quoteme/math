@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>powerseries_sin</title>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+		<style type="text/css" media="screen">
+canvas{
+	border: 2px solid black;
+}
+		</style>
+	</head>
+	<body>
+		<div id="introduction">
+			<h1>The geometric interpretation of the common powerseries for \(cos, \, sin \)</h1>
+			<p>
+			$$
+			\begin{align}
+				sin \theta &= \sum^\infty_{n=0} (-1)^n \frac{\theta^{2n+1}}{(2n+1)!} \\
+				cos \theta &= \sum^\infty_{n=0} (-1)^n \frac{\theta^{2n}}{(2n)!} \\
+			\end{align}
+			$$
+			These are the commonly taught <a href="https://en.wikipedia.org/wiki/Power_series" target="_blank">power series</a> for the
+			<a href="https://en.wikipedia.org/wiki/Trigonometric_functions" target="_blank">trigonometric functions</a> \(sin \) and \(cos \).
+			While learning about these power series and the role they posess in mathematics (for example,
+			to prove <a href="https://en.wikipedia.org/wiki/Euler's_identity" target="_blank">Euler's identity</a>: \( e^{i\pi} = -1)\)
+			I learned to appreciate these formulas.
+			One thing was very dissatisfying to me though. These formulas seemed to be quite arbitrary and no geometric interpretation was there
+			to be found. All this was made even worse, knowing how intuitive \( sin \) and \( cos \) are geometrically, while these series
+			just seemed like random numbers added and subtracted together without any coherence.
+			<br>
+			As a result I began to dig deeper and found this gem of geometry which aims to provide an interactive experience to
+			teach the geometric interpretation of the power series for \(sin \) and \(cos \).
+			<br><br>
+			Legend
+			<ul>
+				<li><span style="background: #a8a8ff">light blue</span> is the \( sin \theta\)</li>
+				<li><span style="background: #3838bb">dark blue</span> is the \( cos \theta\)</li>
+				<li><span style="background: #cc3838">red</span> lines are the lengths of the involutes which go vertically
+					(\( \forall 2k+1, \, k \in \mathbb{N}_0 \))
+				</li>
+				<li><span style="background: #38bb38">green</span> lines are the lengths of the involutes which go horizontally
+					(\( \forall 2k, \, k \in \mathbb{N}_0 \))
+				</li>
+			</ul>
+			<br>
+			When adding all the <span style="background: #cc3838">red</span> lines together
+			(each going up is added, each going down is subtracted), we end up with a length equal to
+			<span style="background: #a8a8ff">\(sin \theta\)</span>.
+			<br>
+			When adding all the <span style="background: #38bb38">green</span> lines together
+			(each going right is added, each going left is subtracted), we end up with a length equal to
+			<span style="background: #3838bb">\(cos \theta\)</span>
+			<br>
+			<br>
+			These <span style="background: #cc3838">red</span> and <span style="background: #38bb38">green</span> lines can be represented
+			as a series \( I_k \) of lines that alternates between <span style="background: #cc3838">red</span> and
+			<span style="background: #38bb38">green</span> lines. We take \( | I_k | \) to mean the length of the \( k^{th}\) line.
+			<br>
+			In order to achieve our "left means subtract for green, right means ..." rules, we need to construct the following:
+			$$
+				\begin{align}
+				Red_k &= (-1)^k |I_{2k+1}| \\
+				Green_k &= (-1)^k |I_{2k}| \\
+				& k \in \mathbb{N}_0
+				\end{align}
+				\\
+				\Rightarrow \sum^\infty_{n=0} Red_k = sin \theta
+				\\
+				\Rightarrow \sum^\infty_{n=0} Green = cos \theta
+			$$
+			Now all we still need to prove is that \( |I_k| = \frac{\theta^k}{k!}\)
+			<br>
+			But with that assumption we already proved the power series of \(sin \) and \(cos \)
+			</p>
+		</div>
+		<canvas id="c" width="800" height="800"></canvas>
+		<table>
+			<tr>
+				<td>\( n = \)</td>
+				<td><input type="range" id="n" value="0" min="0" max="100" step="1" onchange="update()"></td>
+				<td>Number of subdivisions of the angle \( \theta \). Determines how many triangles are used to approximate the circle.</td>
+			</tr>
+			<tr>
+				<td>\( \theta = \)</td>
+				<td><input type="range" id="t" value="45" min="0" max="360" step="1" onchange="update()"></td>
+				<td>Angle of which to calculate \(cos \theta , \, sin \theta \)</td>
+			</tr>
+			<tr>
+				<td>\( k \)</td>
+				<td><input type="range" value="1" min="1" max="20" step="1" id="k" onchange="update()"></td>
+				<td>Number of <a href="https://en.wikipedia.org/wiki/Involute" target="_blank">involutes</a> to draw. Each involute will evolve
+					to the line fromed by the endpoints of the involute before it, as that line evolved to the line before it.</td>
+			</tr>
+		</table>
+		references:
+		<ul>
+			<li><a href="https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103" target="_blank">https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103</a></li>
+			<li><a href="https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743" target="_blank">https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743</a></li>
+		</ul>
+		<script charset="utf-8">
+			const c = document.getElementById("c");
+			let   ctx = c.getContext("2d");
+			const w = c.width;
+			const h = c.height;
+			const r = w*0.2;
+			let   n = 0;
+			const cen = [w/2,h/2]
+			let   t = Math.PI/4;
+			let   k = 1;
+
+			ctx.transform(1, 0, 0, -1, cen[0], h-cen[1]);
+
+			const pathlength = vert => vert
+				// length of a list of vertecies
+				.map( (e,i) => {
+					if(i==0)
+						return 0
+					else
+						return Math.hypot(vert[i][0]-vert[i-1][0], vert[i][1]-vert[i-1][1]);
+				})
+				.reduce( (p,q) => q+p, 0)
+			const endsOfInvolute = (v, startangle) => v.map( (e,i) =>{
+				// find the length of the line up to this point and subtract it from the total length of the line
+				let len = pathlength(v) - pathlength(v.slice(0,i+1));
+				let angle = i==0 ? startangle : Math.atan2(v[i][1]-v[i-1][1], v[i][0]-v[i-1][0]);
+				return [Math.cos(angle)*len+e[0], Math.sin(angle)*len+e[1]]
+			})
+
+			const rad = a => Math.PI/180 * a
+			const draw = (t,n) => {
+				ctx.clearRect(-cen[0],-cen[1],w,h);
+				// circle
+					ctx.beginPath();
+					ctx.strokeStyle = "#888888";
+					ctx.setLineDash([4,2]);
+					ctx.arc(0,0,r,0,2*Math.PI);
+					ctx.stroke();
+				// angle
+					ctx.beginPath();
+					ctx.setLineDash([]);
+					ctx.moveTo(0,0);
+					ctx.lineTo(Math.cos(t)*r,Math.sin(t)*r);
+					ctx.stroke();
+				// triangle approximation of circle
+					// vertecies of the triangles that come from dividing t/n and that lie on the circle
+						let v = new Array(n)
+							.fill(0)
+							.map( (e,i) => [r*Math.cos((i+1)*t/n), r*Math.sin((i+1)*t/n)] )
+					// draw these triangles
+					v.forEach( (e,i) =>{
+						// triangles to center of circle
+							ctx.beginPath();
+							if(i!=0)
+								ctx.moveTo(...v[i-1]);
+							else
+								ctx.moveTo(r,0);
+							ctx.lineTo(...e);
+							ctx.lineTo(0,0);
+							ctx.stroke();
+					})
+					// draw the zeroth Involute for cosine
+						if(v.length != 0) {
+							ctx.beginPath();
+							ctx.strokeStyle = "#38bb38"
+							ctx.moveTo(0,0);
+							ctx.lineTo(r,0);
+							ctx.stroke();
+						}
+					// start and end of Involute to different degrees of involuteness
+					let soi = v;
+					let eoi = endsOfInvolute(v, Math.PI/2);
+					for(let j = 1; j<= k; j++){
+						soi.forEach( (e,i) => {
+							// ends of involutes
+								// color for trig functions
+									if(i == 0)
+										if(j%2)
+											ctx.strokeStyle = "#cc3838"
+										else
+											ctx.strokeStyle = "#38bb38"
+									else
+										ctx.strokeStyle = "#888888"
+								ctx.beginPath();
+								ctx.moveTo(...e);
+								ctx.lineTo(...eoi[i])
+								ctx.stroke();
+						})
+						soi = eoi;
+						eoi = endsOfInvolute(soi, (j+1)*Math.PI/2)
+					}
+
+				// draw the cosine and sine lines
+					// sin
+						ctx.strokeStyle = "#a8a8ff";
+						ctx.beginPath();
+						ctx.moveTo(0,0);
+						ctx.lineTo(0,Math.sin(t)*r);
+						ctx.stroke();
+					// cos
+						ctx.strokeStyle = "#3838bb";
+						ctx.beginPath();
+						ctx.moveTo(0,0);
+						ctx.lineTo(Math.cos(t)*r,0)
+						ctx.stroke();
+
+			}
+			const update = () =>{
+				n = parseInt(document.getElementById("n").value);
+				t = rad(document.getElementById("t").value);
+				k = parseInt(document.getElementById("k").value);
+				draw(t,n);
+			}
+
+			update();
+		</script>
+	</body>
+</html>

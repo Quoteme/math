@@ -43,3 +43,7 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 ##### [pi.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/pi.html)
 
 ##### [e.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/e.html)
+
+##### [powerseries_sin.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/powerseries_sin.html)
+
+![powerseries_sin.png](powerseries_sin.png)
