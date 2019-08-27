@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>sandpiles</title>
+		<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+		<script src='math.min.js'></script>
+		<style type="text/css" media="screen">
+			canvas {
+				border: 1px solid black;
+				width : 100%;
+				image-rendering: pixelated;
+			}
+		</style>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>\(width\)</td>
+				<td><input type="number" id="w" value="30" onchange="updatevar()"></td>
+			</tr>
+			<tr>
+				<td>\(height\)</td>
+				<td><input type="number" id="h" value="30" onchange="updatevar()"></td>
+			</tr>
+			<tr>
+				<td>\(f (x,y) = \)</td>
+				<td><input type="text" value="floor(rand()*10)" id="f" onchange="updatevar()"></td>
+			</tr>
+			<tr>
+				<td>\(loopingMap \)</td>
+				<td> <input type="checkbox" id="loopingMap" onchange="updatevar()"> </td>
+			</tr>
+		</table>
+		<p>
+			<h3>interesting functions:</h3>
+			<table>
+				<tr>
+					<td>point at (p,q) with value of 200 </td>
+					<td>\(200(e^{-(x-p)^{20}}*e^{-(y-q)^{20}})\)</td>
+					<td><input type="text" value="200(e^(-(x-p)^20)*e^(-(y-q)^20))" name="" id="" onclick="setf(this.value)"/></td>
+				</tr>
+				<tr>
+					<td>random</td>
+					<td>\( rand() \)</td>
+					<td><input type="text" value="rand()" name="" id="" onclick="setf(this.value)"/></td>
+				</tr>
+				<tr>
+					<td>funnel with bottom at (p,q)</td>
+					<td>\( \sqrt{(x-p)^2+(y-q)^2} \)</td>
+					<td><input type="text" value="sqrt((x-p)^2+(y-q)^2)" name="" id="" onclick="setf(this.value)"/></td>
+				</tr>
+			</table>
+		</p>
+		<button onclick="m = init(); draw(m)">Initialize</button>
+		<button onclick="update()">Step</button>
+		<canvas id="c"></canvas>
+		<script charset="utf-8">
+			math.import({"rand": ()=>Math.random()})
+			const c = document.getElementById("c");
+			let ctx = c.getContext("2d");
+			let w,h, f;
+			let m; // map / field
+			let loopingMap = false;
+
+			const setf = (v)=> document.getElementById("f").value = v;
+
+			const updatevar = () => {
+				w = parseInt(document.getElementById("w").value);
+				h = parseInt(document.getElementById("h").value);
+				f = math.compile( document.getElementById("f").value );
+				loopingMap = document.getElementById("loopingMap").checked;
+
+				c.width = w;
+				c.height = h;
+			}
+
+			const generate = (w, h, f) => new Array(w)
+				.fill( new Array(h).fill(0) )
+				.map( (e,x) => e.map( (_,y) => f(x,y) ))
+
+			const init = () => m = generate( w, h, ((x,y ) => f.eval({"x": x, "y": y})) )
+
+			const draw = (m, max = 10, color = (x) => `hsl(30.5, 80%, ${x*100/max*(3/4) + 100/4}%)` ) => m.forEach( (e,x) => e.forEach( (v,y) =>{
+				ctx.fillStyle = color(v);
+				ctx.fillRect(x,y,1,1);
+			}))
+			// (x)=>`hsl(${x*360/max},100%,50%)`
+
+//			const step = (m, tipover=3) => m.map( (e,x)=> e.map( (v,y)=>{
+//				let count = 0;
+//				if(x>0)
+//					if(m[x-1][y] >= tipover)
+//						count++;
+//				if(x<w-1)
+//					if(m[x+1][y] >= tipover)
+//						count++;
+//				if(y>0)
+//					if(m[x][y+1] >= tipover)
+//						count++;
+//				if(y<h-1)
+//					if(m[x][y-1] >= tipover)
+//						count++;
+//
+//				if(v >= tipover)
+//					count-= tipover;
+//				return v+count;
+//			}))
+			const step = (m, tipover=4) => {
+				let out = new Array(w).fill(new Array(h).fill(0))
+					.map( (e,x) => e.map( (v,y) =>{
+						let count=0;
+						if(m[x][y] >= tipover)
+							count-=tipover;
+						if(x>0){
+							if(m[x-1][y] >= tipover)
+								count++;
+						}else if(loopingMap){
+							if(m[w-1][y] >= tipover)
+								count++;
+						}
+						if(y>0){
+							if(m[x][y-1] >= tipover)
+								count++;
+						}else if(loopingMap){
+							if(m[x][h-1] >= tipover)
+								count++;
+						}
+						if(x<w-1){
+							if(m[x+1][y] >= tipover)
+								count++;
+						}else if(loopingMap){
+							if(m[0+1][y] >= tipover)
+								count++;
+						}
+						if(y<h-1){
+							if(m[x][y+1] >= tipover)
+								count++;
+						}else if(loopingMap){
+							if(m[x][0+1] >= tipover)
+								count++;
+						}
+						return m[x][y]+count;
+					}));
+				return out;
+			}
+
+			const update = () => {
+				m = step(m);
+				draw(m);
+			}
+
+			updatevar();
+
+			setInterval(()=>{
+				if(m!=undefined && m.length == w && m[0].length == h)
+					update()
+			}, 10);
+		</script>
+	</body>
+</html>
