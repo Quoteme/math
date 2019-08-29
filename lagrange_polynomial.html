@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>lagrange_polynomial</title>
+		<style type="text/css" media="screen">
+			body{
+				background: #444;
+			}
+			canvas{
+				border: 1px solid black;
+				background: #161616;
+			}
+			#p div{
+				background: #161616;
+				color: #bbb;
+				display: table;
+				margin: 3px;
+				padding: 2px;
+				border-radius: 5px;
+				cursor: not-allowed;
+			}
+		</style>
+	</head>
+	<body>
+		<select id="anim" onchange="setAnim(this.value);" >
+		</select>
+			<br>
+		<canvas id="c" width="600" height="600" onclick="addP([(event.offsetX-center[0])/scale[0], (event.offsetY-center[1])/scale[1]])"></canvas>
+		<div id="p">
+		</div>
+
+		<script charset="utf-8">
+			const c = document.getElementById("c");
+			let ctx = c.getContext("2d");
+			let w = c.width;
+			let h = c.height;
+			let center = [w/2,h/2];
+			let scale = [30,30];
+			let points = document.getElementById("p");
+			let accuracy = 100;
+
+			const l = (j, x, p) => p.reduce( (a,c,i)=> a*(i==j ? 1 : (x-c)/(p[j]-c)), 1 )
+			const L = (x, p) => p.reduce( (a,c,i) => a+c[1]*l(i,x,p.map(e=>e[0])), 0 )
+			//const L = (x, p) => p.map( (e,i) => e[0]*l(i,x,p.map(v=>v[0])) )
+
+			const grid = ()=>{
+				ctx.lineWidth = 1;
+				// grid
+					ctx.strokeStyle = "#ffffff";
+					ctx.beginPath();
+					ctx.moveTo(0, center[1]);
+					ctx.lineTo(w, center[1]);
+					ctx.moveTo(center[0], 0);
+					ctx.lineTo(center[0], h);
+					ctx.stroke();
+				// spacers
+					ctx.strokeStyle = "#888";
+					ctx.beginPath();
+					new Array(Math.floor(Math.max(w/scale[0], h/scale[1]))).fill(0)
+						.forEach( (e,i)=> ctx.rect( center[0]-scale[0]*i, center[1]-scale[1]*i, 2*scale[0]*i, 2*scale[1]*i ) )
+					ctx.stroke();
+			}
+			const addP = p => {
+				if( getP().map(e=>e[0]).indexOf(p[0]) != -1 )
+					return 0;
+				let node = document.createElement("div");
+					node.innerHTML = JSON.stringify(p);
+					node.onclick = ()=>{
+						node.remove();
+						draw();
+					}
+				points.appendChild(node);
+				draw();
+			}
+			const setP = (p) =>{
+				[...points.children].forEach( e => e.click() );
+				p.forEach( e => addP(e));
+			}
+			const getP = ()=> [...points.children].map(e=>JSON.parse(e.innerHTML));
+			const drawP = ()=> getP().forEach( e => drawPoint(e[0],e[1]) )
+
+			const draw = ()=>{
+				ctx.clearRect(0,0,w,h);
+				grid();
+				// draw lagrange polynomial
+					ctx.lineWidth = 2;
+					ctx.strokeStyle = "#88f";
+					ctx.beginPath();
+					let tmpP = getP();
+					new Array(accuracy).fill(0)
+						.map( (e,i) => (w/accuracy*i-w/2)/scale[0] )
+						.map( x => [x, L(x, tmpP)])
+						.forEach( (e,i) =>{
+							if(i==0)
+								ctx.moveTo(...scalepoint(...e),0)
+							else
+								ctx.lineTo(...scalepoint(...e),0)
+						})
+						ctx.stroke();
+				// draw clicked points
+					ctx.fillStyle = "#d44";
+					drawP();
+			}
+
+			const drawPoint = (x,y, s=5) => ctx.fillRect( ...scalepoint(x,y,s), s,s )
+			// scales a point from grid coordinates into canvas coordinates
+			const scalepoint = (x,y, s=0) => [x*scale[0]+center[0]-s/2,y*scale[0]+center[1]-s/2]
+			// scale a point from canvas to grid coordinates
+			const invscalepoint = (x,y) => [(x-center[0])/scale[0], (y-center[1])/scale[1]]
+			const animation = {
+				"idle" : ()=>{},
+				"init" : ()=> setP([]),
+				"random walk" : (t=0, s=0.2) => {
+					let p = getP();
+						p = p.map( e => [e[0]+s*(Math.random()-0.5), e[1]+s*(Math.random()-0.5)])
+					setP(p);
+				},
+				"random" : (t,d=50) =>{
+					if(t%d==0){
+						let p = getP().map( e => invscalepoint( Math.random()*w, Math.random()*h ))
+						setP(p);
+					}
+				},
+				"sinusoid" : (t=0, n=10) => {
+					let p = new Array(n).fill(0)
+						.map( (e,i) => invscalepoint(w/n * i/2+center[0]/2, center[1]+Math.sin(i*t*0.01)*30 ))
+					setP(p);
+				},
+				"up \'n down" : (t, n=10) => {
+					let x = (t/30)
+					let p = new Array(n).fill(0)
+						.map( (e,i) => invscalepoint( Math.cos(i + x/2)*w/4 +center[0], center[1]+(Math.cos(2*(x+i))-Math.sin((x+i)/2)**2)*30 ) )
+					setP(p);
+				}
+			}
+			const setAnim = (v) => currentAnimation = v;
+
+			let timer = 0;
+			let currentAnimation = "idle";
+			setInterval( ()=>{
+				timer++;
+				animation[currentAnimation](timer);
+			}, 50);
+
+			// init
+				grid();
+				Object.keys(animation).forEach( e=>{
+					let node = document.createElement("option");
+						node.value = e;
+						node.innerHTML = e;
+					document.getElementById("anim").appendChild(node);
+				})
+		</script>
+	</body>
+</html>
