@@ -12,7 +12,7 @@ canvas{
 	</head>
 	<body>
 		<div id="introduction">
-			<h1>The geometric interpretation of the common powerseries for \(cos, \, sin \)</h1>
+			<h1>The geometric interpretation of the common powerseries for \(cos\) and \( sin \)</h1>
 			<p>
 			$$
 			\begin{align}
@@ -74,31 +74,80 @@ canvas{
 			But with that assumption we already proved the power series of \(sin \) and \(cos \)
 			</p>
 		</div>
-		<canvas id="c" width="800" height="800"></canvas>
-		<table>
-			<tr>
-				<td>\( n = \)</td>
-				<td><input type="range" id="n" value="0" min="0" max="100" step="1" onchange="update()"></td>
-				<td>Number of subdivisions of the angle \( \theta \). Determines how many triangles are used to approximate the circle.</td>
-			</tr>
-			<tr>
-				<td>\( \theta = \)</td>
-				<td><input type="range" id="t" value="45" min="0" max="360" step="1" onchange="update()"></td>
-				<td>Angle of which to calculate \(cos \theta , \, sin \theta \)</td>
-			</tr>
-			<tr>
-				<td>\( k \)</td>
-				<td><input type="range" value="1" min="1" max="20" step="1" id="k" onchange="update()"></td>
-				<td>Number of <a href="https://en.wikipedia.org/wiki/Involute" target="_blank">involutes</a> to draw. Each involute will evolve
-					to the line fromed by the endpoints of the involute before it, as that line evolved to the line before it.</td>
-			</tr>
-		</table>
-		references:
-		<ul>
-			<li><a href="https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103" target="_blank">https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103</a></li>
-			<li><a href="https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743" target="_blank">https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743</a></li>
-		</ul>
+		<div class="animation">
+			<canvas id="c" width="800" height="800"></canvas>
+			<table>
+				<tr>
+					<td>\( n = \)</td>
+					<td><input type="range" id="n" value="0" min="0" max="100" step="1" onchange="update()"></td>
+					<td>Number of subdivisions of the angle \( \theta \). Determines how many triangles are used to approximate the circle.</td>
+				</tr>
+				<tr>
+					<td>\( \theta = \)</td>
+					<td><input type="range" id="t" value="45" min="0" max="360" step="1" onchange="update()"></td>
+					<td>Angle of which to calculate \(cos \theta , \, sin \theta \)</td>
+				</tr>
+				<tr>
+					<td>\( k \)</td>
+					<td><input type="range" value="1" min="1" max="20" step="1" id="k" onchange="update()"></td>
+					<td>Number of <a href="https://en.wikipedia.org/wiki/Involute" target="_blank">involutes</a> to draw. Each involute will evolve
+						to the line fromed by the endpoints of the involute before it, as that line evolved to the line before it.</td>
+				</tr>
+			</table>
+			references:
+			<ul>
+				<li><a href="https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103" target="_blank">https://math.stackexchange.com/questions/1048/different-definitions-of-trigonometric-functions/1103#1103</a></li>
+				<li><a href="https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743" target="_blank">https://math.stackexchange.com/questions/2758418/deriving-the-power-series-for-cosine-using-basic-geometry#2758743</a></li>
+			</ul>
+		</div>
+		<div id="connection_to_e">
+			<h1>Connection to \(e\)</h1>
+
+			We know that exponentiating \( i = \sqrt{-1} \) with a number \( z \in \mathbb{Z} \), the following pattern will emerge:
+			$$
+			\begin{align}
+				\dots			\quad
+				i^{-4} =  1 	\quad
+				i^{-3} =  i 	\quad
+				i^{-2} = -1 	\quad
+				i^{-1} = -i 	\quad
+				i^0 = 1 		\quad
+				i^1 = i 		\quad
+				i^2 = -1		\quad
+				i^3 = -i		\quad
+				i^4 = 1 		\quad
+				\dots
+			\end{align}
+			$$
+			This can be visualized in the following way
+			<br>
+			<canvas id="i_power" width="200" height="200"></canvas>
+			<br>
+			<input type="range" value="0" min="-10" max="10" step="1" onchange="drawIPWR(this.value)">
+			<br>
+			We also know that \(e\) is defined as \( \sum^\infty_{n=0}\frac{x^n}{n!}\) because:
+			$$
+			\begin{equation}
+				\frac{d}{dx} e^x = e^x \\
+				e^x \stackrel{!}{=} \sum^\infty_{n=0} \frac{x^n}{n!} = 1+\frac{x^1}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots \\
+				\frac{d}{dx} \bigg( 1+\frac{x^1}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots \bigg) = 0+1+\frac{x^1}{1!}+\frac{x^2}{2!}+\frac{x^3}{3!}+\dots\\
+				\frac{d}{dx} \sum^\infty_{n=0} \frac{x^n}{n!} = \sum^\infty_{n=0} \frac{x^n}{n!} \\
+			\end{equation}
+			$$
+			We can now also see why there is the connection between \(e\) and \(cos, \, sin\) called
+			<a href="https://en.wikipedia.org/wiki/Euler's_identity" target="_blank">Euler's identity</a>: \( e^{i\theta} = cos \theta + i sin\theta\)
+			<br>
+			With each term, the exponent in the power series for \(e\) increases by \(1\). Therefor, if we plug in \(i\) as a basis, it will
+			be rotated by \(90°\) on every term. We also know, that each term in the sum has an absolute value (ie. "line length") of
+			\( \frac{\theta^n}{n!} \). This corresponds to the observations about \( |I_k| \) we made in the section
+			<a href="#introduction" >Introduction</a>.
+			By leaving out every even term, we can therefor derive \(sin\theta \), or by leaving out the odd terms \(cos \theta \).
+			<br>
+			This however still leaves the question, why \( \frac{d}{dx} e^x = e^x \) based on the knowledge of
+			<a href="e.html#det" target="_blank">what we learned about e</a>
+		</div>
 		<script charset="utf-8">
+			// POWER SERIES COSINE SINE ANIMATION
 			const c = document.getElementById("c");
 			let   ctx = c.getContext("2d");
 			const w = c.width;
@@ -212,6 +261,48 @@ canvas{
 				draw(t,n);
 			}
 
+			// I POWER ANIMATION
+			const c_ipwr = document.getElementById("i_power");
+			const drawIPWR = p => {
+				let ctx = c_ipwr.getContext("2d");
+				let width = c_ipwr.width;
+				let height = c_ipwr.height;
+				let radius = width*0.45;
+				let offset = [4,4];
+				ctx.clearRect(0,0,width, height);
+
+				// GRID
+					ctx.beginPath();
+					ctx.strokeStyle = "#888888";
+					ctx.setLineDash([4,2]);
+					ctx.arc(width/2,height/2,radius,0,2*Math.PI);
+					ctx.moveTo(0,height/2);
+					ctx.lineTo(width, height/2);
+					ctx.moveTo(width/2,0);
+					ctx.lineTo(width/2, height);
+					ctx.stroke();
+					ctx.setLineDash([]);
+
+				// INFO
+					ctx.fillStyle = "#d70000";
+					ctx.textAlign = "left";
+					ctx.textBaseline = "top";
+					ctx.fillText(`i^${p}`, offset[0],offset[1]);
+					ctx.fillStyle = "#000000";
+					// COORDINATES
+						ctx.fillText("1", width/2+radius+offset[0],height/2+offset[1]);
+						ctx.fillText("i", width/2+offset[0],height/2-radius+offset[1]);
+						ctx.fillText("-1", width/2-radius+offset[0],height/2+offset[1]);
+						ctx.fillText("-i", width/2+offset[0],height/2+radius+offset[1]);
+				// RESULT
+					ctx.fillStyle = "#d70000";
+					ctx.fillRect(
+						width/2 + Math.cos(1/2*Math.PI*p)*radius,
+						height/2- Math.sin(1/2*Math.PI*p)*radius,
+						5,5
+					)
+			}
+			drawIPWR(0)
 			update();
 		</script>
 	</body>
