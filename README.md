@@ -4,46 +4,46 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 
 ### Demo images:
 
-##### [intervalRun.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/intervalRun.html)
+##### [intervalRun.html](https://quoteme.github.io/math/intervalRun.html)
 
 ![intervalRun.gif](intervalRun.gif)
 
-##### [184.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/184.html)
+##### [184.html](https://quoteme.github.io/math/184.html)
 
 ![184.gif](184.gif)
 
-##### [3dPointMapping.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/3dPointMapping.html)
+##### [3dPointMapping.html](https://quoteme.github.io/math/3dPointMapping.html)
 
 ![3dPointMapping.gif](3dPointMapping.gif)
 
-##### [3dPointMapping_adv.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/3dPointMapping_adv.html)
+##### [3dPointMapping_adv.html](https://quoteme.github.io/math/3dPointMapping_adv.html)
 
 ![3dPointMapping_adv.gif](3dPointMapping_adv.gif)
 
-##### [cyclicCellularAutomation.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/cyclicCellularAutomation.html)
+##### [cyclicCellularAutomation.html](https://quoteme.github.io/math/cyclicCellularAutomation.html)
 
 ![cyclicCellularAutomation.gif](cyclicCellularAutomation.gif)
 
-##### [kreise.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/kreise.html)
+##### [kreise.html](https://quoteme.github.io/math/kreise.html)
 
 ![kreise.gif](kreise.gif)
 
-##### [randomwalk.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/randomwalk.html)
+##### [randomwalk.html](https://quoteme.github.io/math/randomwalk.html)
 
 ![randomwalk.png](randomwalk.png)
 
-##### [restring.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/restring.html)
+##### [restring.html](https://quoteme.github.io/math/restring.html)
 
 ![restring.gif](restring.gif)
 
-##### [mathemusik/index.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/mathemusik/index.html)
+##### [mathemusik/index.html](https://quoteme.github.io/math/mathemusik/index.html)
 
 ![mathemusik/demo.png](mathemusik/demo.png)
 
-##### [pi.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/pi.html)
+##### [pi.html](https://quoteme.github.io/math/pi.html)
 
-##### [e.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/e.html)
+##### [e.html](https://quoteme.github.io/math/e.html)
 
-##### [powerseries_sin.html](http://htmlpreview.github.io/?https://github.com/Quoteme/math/blob/master/powerseries_sin.html)
+##### [powerseries_sin.html](https://quoteme.github.io/math/powerseries_sin.html)
 
 ![powerseries_sin.png](powerseries_sin.png)
