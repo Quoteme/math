@@ -1,6 +1,4 @@
-# Math
-
-A collection of small mathematical programs written by me (Luca Leon Happel)
+A collection of small mathematical programs written by me (Luca Leon Happel) [https://quoteme.github.io/math/](https://quoteme.github.io/math/)
 
 ### Projects:
 
