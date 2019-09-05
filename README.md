@@ -42,7 +42,7 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 
 ##### [pi.html](https://quoteme.github.io/math/pi.html)
 
-![pi.png](pi.png)
+![pi.gif](pi.gif)
 
 ##### [e.html](https://quoteme.github.io/math/e.html)
 
