@@ -44,6 +44,8 @@ A collection of small mathematical programs written by me (Luca Leon Happel)
 
 ##### [e.html](https://quoteme.github.io/math/e.html)
 
+![e.png](e.png)
+
 ##### [powerseries_sin.html](https://quoteme.github.io/math/powerseries_sin.html)
 
 ![powerseries_sin.png](powerseries_sin.png)
