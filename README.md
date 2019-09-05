@@ -1,5 +1,7 @@
 A collection of small mathematical programs written by me (Luca Leon Happel) [https://quoteme.github.io/math/](https://quoteme.github.io/math/)
 
+[![DONATE](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.me/lucahappel)
+
 ### Projects:
 
 * [intervalRun.html](https://quoteme.github.io/math/intervalRun.html)
