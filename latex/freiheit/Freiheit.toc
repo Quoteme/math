@@ -1,0 +1,23 @@
+\babel@toc {ngerman}{}
+\contentsline {section}{\numberline {1}Einleitung}{2}% 
+\contentsline {section}{\numberline {2}Wahlen und Einschränkungen}{2}% 
+\contentsline {subsection}{\numberline {2.1}Freiheit und Belieben}{2}% 
+\contentsline {subsection}{\numberline {2.2}Gleichheit und Belieben}{3}% 
+\contentsline {subsection}{\numberline {2.3}Entscheidungsraum}{3}% 
+\contentsline {subsection}{\numberline {2.4}Definition: Einschränkung}{3}% 
+\contentsline {subsubsection}{\numberline {2.4.1}Kurznotation}{3}% 
+\contentsline {subsubsection}{\numberline {2.4.2}freie/leere Einschränkung}{3}% 
+\contentsline {subsubsection}{\numberline {2.4.3}totale Einschränkung}{3}% 
+\contentsline {subsection}{\numberline {2.5}Definition: Möglichkeitsraum}{3}% 
+\contentsline {subsubsection}{\numberline {2.5.1}Unmöglichkeitsraum}{4}% 
+\contentsline {subsubsection}{\numberline {2.5.2}Spezialfall}{4}% 
+\contentsline {subsection}{\numberline {2.6}Definition: möglich}{4}% 
+\contentsline {subsection}{\numberline {2.7}Einschränkung lässt Freiheit zu}{4}% 
+\contentsline {subsection}{\numberline {2.8}Rückblick}{4}% 
+\contentsline {subsection}{\numberline {2.9}Beispiel}{4}% 
+\contentsline {subsection}{\numberline {2.10}Erkenntnisse}{5}% 
+\contentsline {subsubsection}{\numberline {2.10.1}Was ist Freiheit}{5}% 
+\contentsline {subsubsection}{\numberline {2.10.2}Woraus entsteht Freiheit}{5}% 
+\contentsline {subsubsection}{\numberline {2.10.3}Was macht Freiheit}{5}% 
+\contentsline {section}{\numberline {3}Freiheit}{5}% 
+\contentsline {subsection}{\numberline {3.1}Definition: Freiheit}{5}% 

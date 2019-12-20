@@ -1,0 +1,131 @@
+\documentclass[12pt]{article}
+
+% Generelles
+\usepackage[utf8]{inputenc}
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+% Mathematik
+\usepackage{amsmath}
+\usepackage{amssymb}
+% Zitate
+\usepackage{epigraph}
+
+\title{Freiheit}
+\author{Luca Leon Happel}
+\date{Fr 20 Dez 2019 18:19:19 CET}
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	\newpage
+
+	\section{Einleitung}
+		\epigraph{
+			Wollen befreit: das ist die wahre Lehre von
+			Wille und Freiheit - so lehrt sie euch Zarathustra.
+		}{
+			\textit{Friedrich Nietzsche\\- Also sprach Zarathustra}
+		}
+		``Die Freiheit'', ein Begriff, welcher recht einfach zu sein
+		scheint, doch hinter welchem viele Fragen stecken, welche
+		zu teils tief in unser Verständnis der Realität greifen.
+		\begin{itemize}
+			\item Was ist Freiheit
+			\item Wodurch entsteht Freiheit
+			\item Existiert Freiheit
+			\item Was macht Freiheit
+			\item Sind Menschen frei
+		\end{itemize}
+		Dies sind einige der Fragen, welche ich in diesem Artikel
+		versuchen werde zu beantworten. Die Methodik dahinter ist, dass
+		ich ein Modell für die Freiheit aufbauen werde, welches mein
+		Verständnis von Freiheit darstellt. Wenn dieses Modell
+		konstruiert ist, kann ich mit dessen Hilfe Antworten auf die
+		zuvor gestellten Fragen herleiten und somit mehr über unsere
+		Realität und Existenz herausfinden.
+		Die Grundidee dabei ist, dass ich eine mathematische
+		Herangehensweise wähle um dieses Modell zu konstruieren.
+
+	\section{Wahlen und Einschränkungen}
+		\subsection{Freiheit und Belieben}
+			Sei $x\in X$ frei wählbar $\Leftrightarrow$
+			Sei $x\in X$ beliebig\\
+			$\Rightarrow$ frei wählbar $=$ beliebig
+		\subsection{Gleichheit und Belieben}
+			$\forall x \in X : f(x)$\\
+			Suche ein $x$ mit $f(x)$.\\
+			Da dies für alle $x$ gegeben ist, ist $x$ beliebig\\
+			$\Rightarrow x$ ist frei unter der Auswahl $\{x\in X | f(x)\}$
+		\subsection{Entscheidungsraum}
+			Sei $X$ eine beliebige Menge\\
+			$X$ ist ein Entscheidungsraum
+		\subsection{Definition: Einschränkung}
+			Eine \textbf{Einschränkung} $E:X\Rightarrow \{wahr, falsch\}$ eines
+			Entscheidungsraumes $X$ ist eine
+			Relation der Elemente von $X$ auf Werte wahr oder falsch
+			sein können.\\
+			\subsubsection{Kurznotation}
+				\begin{itemize}
+					\item $E(x) \Leftrightarrow E(x)=0 \Leftrightarrow E(x)$ ist wahr
+					\item $\neg E(x) \Leftrightarrow E(x)\neq 0 \Leftrightarrow E(x)$ ist falsch
+				\end{itemize}
+			\subsubsection{freie/leere Einschränkung}
+				Sei $E$ eine Einschränkung\\
+				$E$ ist freie Einschränkung $\Leftrightarrow$ $E(x)\> \forall x\in X$
+			\subsubsection{totale Einschränkung}
+				Sei $E$ eine Einschränkung\\
+				$E$ ist totale Einschränkung $\Leftrightarrow$ $\neg E(x)\> \forall x\in X$
+		\subsection{Definition: Möglichkeitsraum}
+			Sei $X$ eine Entscheidungsraum.\\
+			Sei $E$ eine Einschränkung\\
+			$X$ ist \textbf{Möglichkeitsraum} unter $E$ $\Leftrightarrow \forall x\in X: E(x)$
+			\subsubsection{Unmöglichkeitsraum}
+				$X^C = \{x \in X: E(x)\neq 0\}$, das Komplement von $X$, ist der
+				\textbf{Unmöglichkeitsraum}
+			\subsubsection{Spezialfall}
+				Ist der Entscheidungsraum $X = M$, so kann man
+				Möglichkeitsraum und Entscheidungsraum als Begriffe miteinander
+				vertauschen.
+		\subsection{Definition: möglich}
+			Sei $X$ eine Entscheidungsraum\\
+			Sei $E$ eine Einschränkung\\
+			Sei $M$ der Möglichkeitsraum von $E$\\
+			$x$ ist \textbf{möglich} unter $E$ $\Leftrightarrow$ $x \in M$
+		\subsection{Einschränkung lässt Freiheit zu}
+			Sei $E$ eine Einschränkung und $M$ sein Möglichkeitsraum\\
+			$E$ lässt Freiheit zu $\Leftrightarrow$ $|M|>1$
+		\subsection{Rückblick}
+			Nun wurde einiges über Möglichkeiten definiert. Dies wird
+			benötigt, damit man Einschränkungen auf Freiheit setzen kann.
+			So kann ein Ding frei sein, jedoch eingeschränkt in
+			dem Rahmen seiner Möglichkeiten.
+		\subsection{Beispiel}
+			Sei $X=\mathbb{R}$\\
+			Sei $E:X\Rightarrow \{0,\pm 1\},\> x\mapsto |sin(x)|$ eine Einschränkung\\
+			Der Möglichkeitsraum von $E$ ist $\{x \in X | |sin(x)|=0\} = \{n\pi | n\in \mathbb{Z}\}$
+			Somit kann, wenn $x \in X$ frei unter der Einschränkung $E$
+			gewählt werden soll, nur $x\in \{n\pi | n\in \mathbb{Z}\}$
+		\subsection{Erkenntnisse}
+			Bisher kann man einige der Fragen alleine mit diesen
+			Definitionen beantworten.
+			\subsubsection{Was ist Freiheit}
+				Freiheit ist die Fähigkeit, ein beliebiges Element aus
+				einem Möglichkeitsraum zu wählen.\\
+				(jedoch stellt sich die Frage, was ``Wählen'' bedeutet)
+			\subsubsection{Woraus entsteht Freiheit}
+				Freiheit entsteht, wenn es einen Entscheidungsraum
+				oder Möglichkeitsraum gibt, welcher eine Kardinalität
+				größer als 1 hat.\\
+				Also, es gibt mehr Entscheigungen/Möglichkeiten als eine.
+			\subsubsection{Was macht Freiheit}
+				Freiheit erlaubt es, Wahlen in einem Möglichkeitsraum
+				zu treffen.
+			Für die restlichen Fragen müssen zuerst weitere Fragen
+			beantwortet werden. Die Frage, die dabei wohl am meisten
+			heraussticht ist, was ``Wählen'' denn genau bedeutet.
+	\section{Freiheit}
+		\subsection{Definition: Freiheit}
+			Sei $M$ ein Möglichkeitsraum.\\
+			$f: \mathcal{P}(M) \rightarrow M$ ist eine Freiheit, wenn
+\end{document}
