@@ -51,3 +51,7 @@ A collection of small mathematical programs written by me (Luca Leon Happel) [ht
 * [powerseries_sin.html](https://quoteme.github.io/math/powerseries_sin.html)
 
 	![powerseries_sin.png](powerseries_sin.png)
+
+* [epsilon/epsilon.ipynb](epsilon/epsilon.ipynb)
+
+	![epsilon/epsilon.png](epsilon/epsilon.png)
