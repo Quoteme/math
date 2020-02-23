@@ -52,6 +52,6 @@ A collection of small mathematical programs written by me (Luca Leon Happel) [ht
 
 	![powerseries_sin.png](powerseries_sin.png)
 
-* [epsilon/epsilon.ipynb](epsilon/epsilon.ipynb)
+* [epsilon/epsilon.html](epsilon/epsilon.html) [epsilon/epsilon.ipynb](epsilon/epsilon.ipynb)
 
 	![epsilon/epsilon.png](epsilon/epsilon.png)
