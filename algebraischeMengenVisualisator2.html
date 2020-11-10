@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>algebraischeMengenVisualisator2</title>
+		<meta name="author" content="Luca Leon Happel">
+		<style type="text/css">
+			canvas {
+				border: 1px solid black;
+				background: #eee;
+			}
+		</style>
+		<script type="text/javascript" src='./src/math.js'>
+		</script>
+	</head>
+	<body>
+		<table>
+			<tr>
+				<td>Expression</td>
+				<td><input type="text" id='expression' value='y^2-x*(x-1)*(x+1)' onchange='calc()'/></td>
+			</tr>
+			<tr>
+				<td>Step</td>
+				<td><input type="range" id='step' value='5' min='1' max='20' step='1' /></td>
+			</tr>
+			<tr>
+				<td>Tolerance</td>
+				<td><input type="range" id='tolerance' value='0.1' min='0.025' max='0.5' step='0.025' onchange='calc()' /></td>
+			</tr>
+		</table>
+		<br>
+		<canvas id='c'></canvas>
+		<canvas id='hc'></canvas>
+		<script type="text/javascript">
+			const c = document.getElementById('c');
+				c.width = 400;
+				c.height = 300;
+			const ctx = c.getContext('2d');
+				ctx.transform(1,0,0,-1,c.width/2,c.height/2)
+			const hc = document.getElementById('hc');
+				hc.width = 400;
+				hc.height = 300;
+				hc.style.display = 'none';
+				hc.style.position = 'fixed'
+			const hctx = hc.getContext('2d');
+				hctx.transform(1,0,0,-1,hc.width/2,hc.height/2)
+			let scale = [40,40]
+			const eq = document.getElementById('expression');
+			const to = document.getElementById('tolerance');
+
+			c.onmousemove =
+					({ offsetX: x,
+					   offsetY: y,
+					   pageX  : px,
+					   pageY  : py,}) => {
+				let margin = 15;
+				hc.style.display = 'block';
+				hc.style.left = `${px+margin}px`;
+				hc.style.top = `${py+margin}px`;
+				let step = parseInt(document.getElementById('step').value);
+				calc(
+					eq.value,
+					hc,
+					hctx,
+					(vx,vy) => ({
+						x: math.complex((x-c.width/2)/scale[0],vx),
+						y: math.complex((y-c.height/2)/scale[1],vy)}),
+					[step,step]
+				)
+			}
+			c.onmouseleave = _ => hc.style.display = 'none';
+
+			const grid = (ctx) => {
+				ctx.strokeStyle='#ddd';
+				ctx.strokeWidth=1;
+				ctx.fillStyle='#bbb'
+				let originSize=2;
+				for( let x=0; x<c.width/scale[0]/2; x++ ){
+					for( let y=0; y<c.height/scale[1]/2; y++ ){
+						ctx.beginPath();
+						ctx.moveTo(-x*scale[0],-c.height/2);
+						ctx.lineTo(-x*scale[0],+c.height/2);
+						ctx.moveTo(+x*scale[0],-c.height/2);
+						ctx.lineTo(+x*scale[0],+c.height/2);
+						ctx.moveTo(-c.width,-y*scale[1]);
+						ctx.lineTo(+c.width,-y*scale[1]);
+						ctx.moveTo(-c.width,+y*scale[1]);
+						ctx.lineTo(+c.width,+y*scale[1]);
+						//ctx.closePath();
+						ctx.stroke();
+					}
+				}
+				ctx.beginPath();
+				ctx.arc(0,0,scale[0],0,2*Math.PI);
+				ctx.stroke();
+				ctx.fillRect(-originSize,-originSize,2*originSize,2*originSize);
+			}
+			const calc = (
+					expression=eq.value,
+					canvas=c,
+					context=ctx,
+					scope=(x,y)=>({x: x, y: y}),
+					step=[1,1],
+					tolerance=to.value)=>{
+				context.clearRect(
+					-canvas.width/2,
+					-canvas.height/2,
+					+canvas.width,
+					+canvas.height);
+				grid(context);
+				let code = math.compile(expression);
+				for( let x=-canvas.width/2; x<canvas.width/2; x+=step[0] ){
+					for( let y=-canvas.height/2; y<canvas.height/2; y+=step[1] ){
+						let val = math.abs(code.evaluate(scope(x/scale[0],y/scale[1])))
+						if(val<tolerance){
+							// Here is a Zero of the expression
+							context.fillStyle=`rgba(255,0,0,${(tolerance-val)/tolerance})`;
+							context.fillRect(x,y,...step);
+						}
+					}
+				}
+			}
+			const init = _ => {
+				grid(ctx);
+				grid(hctx);
+				calc()
+			}
+			init();
+		</script>
+	</body>
+</html>

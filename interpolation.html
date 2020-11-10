@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>interpolation</title>
+		<meta name="author" content="Luca Leon Happel">
+		<style type="text/css">
+			.frame {
+				border : 1px solid black;
+				display: inline-block;
+				margin : 5px;
+			}
+			.frame canvas {
+				background: #161616;
+			}
+		</style>
+	</head>
+	<body>
+		<script type="text/javascript">
+			const frame = (id, update=_=>{}) => {
+				let frame           = document.createElement('DIV');
+					frame.className = 'frame';
+					frame.id        = id;
+				let name            = document.createElement('DIV');
+				    name.innerText  = id;
+					frame.appendChild(name);
+				let canvas          = document.createElement('CANVAS');
+					frame.appendChild(canvas);
+				const init = _ => {
+					document.body.appendChild(frame);
+					canvas.width  = 300;
+					canvas.height = 200;
+					c             = canvas;
+					ctx           = canvas.getContext("2d");
+					update(c, ctx, update);
+				}
+				return {
+					frame : frame,
+					canvas: canvas,
+					init  : init}
+			}
+			const main = _ => {
+				let frames = [
+								frame('Lagrange',
+										(c,ctx, update) => {
+											console.log('lal')
+											window.createAnimationFrame(update)
+										}),
+								frame('Newton')]
+				frames.forEach(f => f.init());
+			}
+			main();
+		</script>
+	</body>
+</html>
