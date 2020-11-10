@@ -22,6 +22,10 @@
 				<td><input type="text" id='expression' value='y^2-x*(x-1)*(x+1)' onchange='calc()'/></td>
 			</tr>
 			<tr>
+				<td>Scale</td>
+				<td><input type="range" id='scale' value='40' min='10' max='100' step='5' onchange='scale=[parseInt(this.value),parseInt(this.value)]; calc()'/></td>
+			</tr>
+			<tr>
 				<td>Step</td>
 				<td><input type="range" id='step' value='5' min='1' max='20' step='1' /></td>
 			</tr>
