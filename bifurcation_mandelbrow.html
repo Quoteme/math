@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>bifurcation_mandelbrow</title>
+		<meta name="author" content="Luca Leon Happel">
+		<style type="text/css">
+			canvas {
+				background: #161616;
+			}
+			body {
+				margin: 0px;
+				overflow: hidden;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="c"></canvas>
+		<script type="text/javascript">
+			const c = document.getElementById("c");
+			const ctx = c.getContext("2d");
+			let unit = 100;
+
+			const init = _ => {
+				c.width = window.innerWidth;
+				c.height = window.innerHeight;
+				ctx.transform(1, 0, 0, 1, c.width/2,c.height/2);
+				window.onresize = init
+			}
+			const coordinateGrid = _ => {
+				for(let x=0; x<c.width/2;x+=unit )
+					for(let y=0; y<c.height/2;y+=unit ){
+						console.log(x,y)
+						ctx.fillStyle = '#f0f0f0'
+						ctx.fillRect(c.width/2+x,c.height/2+y,1,1)
+						ctx.fillRect(c.width/2-x,c.height/2-y,1,1)
+					}
+			}
+			const clear = _ => {
+				ctx.clearRect(-c.width/2,-c.height/2,c.width,c.height);
+			}
+			const drawPoint = (x,y,clr='#df0000',r=3) => {
+				ctx.beginPath();
+				ctx.arc(x*unit, y*unit, r, 0,2*Math.PI);
+				ctx.fillStyle = clr;
+				ctx.fill();
+			}
+			const mandelbrot = ([zre=0,zim=0],[cre=0,cim=0]) => [
+				zre*zre-zim*zim+cre,
+				2*zre*zim+cim]
+			// f(f(...f)) in total n times
+			const repeat = (f,n,acc=(x=>x)) => n==0?acc:repeat(f,n-1,x=>f(acc(x)))
+			c.onmousemove = ({pageX:x, pageY:y}) => {
+				clear();
+				coordinateGrid();
+				let f = v => mandelbrot(v,[(x-c.width/2)/unit,(y-c.height/2)/unit]);
+				let num = 10
+				let alpha = i => 1/2 + 1/2 * (num-i)/num
+				let points = new Array(num).fill(0)
+					.map( (_,i) => repeat(f,i)([0,0]) )
+					.forEach( (p,i) => drawPoint(...p, `rgba(255,0,0,${alpha(i)})` ) )
+				drawPoint(
+					(x- c.width/2)/unit,
+					(y-c.height/2)/unit)
+			}
+			init();
+			coordinateGrid();
+		</script>
+	</body>
+</html>
