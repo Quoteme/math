@@ -59,3 +59,7 @@ A collection of small mathematical programs written by me (Luca Leon Happel) [ht
 * [algebraischeMengenVisualisator2.html](https://quoteme.github.io/math/algebraischeMengenVisualisator2.html)
 
 	![algebraischeMengenVisualisator2.html](./algebraischeMengenVisualisator2.gif)
+
+* [projektivePlane/index.html](./projektivePlane/index.html)
+
+	![./projektivePlane/index.html](https://i.imgur.com/mKE282x.png)
