@@ -1,0 +1,3 @@
+[submodule "projektivePlane/keyboard"]
+	path = projektivePlane/keyboard
+	url = https://github.com/quoteme/keyboard.git
