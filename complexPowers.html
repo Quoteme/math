@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>complexPowers</title>
+		<meta name="author" content="Luca Leon Happel">
+		<style>
+			#c {
+				border: 1px solid #161616
+			}
+		</style>
+	</head>
+	<body>
+		<canvas id="c" width="300" height="300"></canvas>
+		<table>
+			<tr>
+				<td><span id="powerIndicator"></span></td>
+				<td><input type="range" min="-10" max="10" step="0.1" value="1" id='power'>power</input></td>
+			</tr>
+			<tr>
+				<td><span id="accuracyIndicator"></span></td>
+				<td><input type="range" min="1" max="10" step="1" value="3" id='accuracy'>accuracy</input></td>
+			</tr>
+		</table>
+		<script>
+			let c = document.getElementById('c')
+			let ctx = c.getContext('2d')
+			let power = document.getElementById('power')
+			let powerIndicator = document.getElementById('powerIndicator')
+			let accuracy = document.getElementById('accuracy')
+			let accuracyIndicator = document.getElementById('accuracyIndicator')
+
+			let center = {x: c.width/2, y: c.height/2}
+
+			power.onchange = _ => {
+				powerIndicator.innerHTML = power.value
+				draw(parseFloat(power.value),parseInt(accuracy.value))
+			}
+
+			accuracy.onchange = _ => {
+				accuracyIndicator.innerHTML = accuracy.value
+				draw(parseFloat(power.value),parseInt(accuracy.value))
+			}
+
+			const draw = (power, accuracy=8) => {
+				for(let x=0; x<c.width; x+=accuracy){
+					for(let y=0; y<c.height; y+=accuracy){
+						let arg = power*Math.atan2(y-center.y,x-center.x)
+						ctx.fillStyle = `hsl(${arg/2/Math.PI*360}, 100%, 50%)`
+						ctx.fillRect(x, y,accuracy,accuracy)
+					}
+				}
+			}
+			const init = _ =>{
+				powerIndicator.innerHTML = power.value
+				accuracyIndicator.innerHTML = accuracy.value
+				draw(1)
+			}
+			init()
+		</script>
+	</body>
+</html>
