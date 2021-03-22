@@ -6,7 +6,7 @@
 		<meta name="author" content="Luca Leon Happel">
 		<style>
 			#c {
-				border: 1px solid #161616
+				border: 1px solid #161616;
 			}
 		</style>
 	</head>
@@ -42,7 +42,8 @@
 				draw(parseFloat(power.value),parseInt(accuracy.value))
 			}
 
-			const draw = (power, accuracy=8) => {
+			const draw = (power, accuracy=3) => {
+				c.style.filter = `blur(${accuracy}px)`
 				for(let x=0; x<c.width; x+=accuracy){
 					for(let y=0; y<c.height; y+=accuracy){
 						let arg = power*Math.atan2(y-center.y,x-center.x)
