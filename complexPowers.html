@@ -43,7 +43,7 @@
 			}
 
 			const draw = (power, accuracy=3) => {
-				c.style.filter = `blur(${accuracy}px)`
+				c.style.filter = `blur(${accuracy-1}px)`
 				for(let x=0; x<c.width; x+=accuracy){
 					for(let y=0; y<c.height; y+=accuracy){
 						let arg = power*Math.atan2(y-center.y,x-center.x)
