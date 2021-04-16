@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Ideal</title>
+		<meta name="author" content="Luca Leon Happel">
+		<script src="./math.min.js"></script>
+	</head>
+	<body>
+		<div id="">
+		</div>
+		<script>
+			const makeTree = (start='1', multiplier='x', width=5, depth=2) => {
+				let container = document.createElement('div')
+				let tree = document.createElement('ul')
+				let root = document.createElement('div')
+					root.innerHTML = math.simplify(start).toHTML()
+				if(depth!=0){
+					let children = new Array(width)
+						.fill(0)
+						.map( (_,i) => makeTree(
+							`${start}+${i-math.floor(width/2)}*${multiplier}`,
+							multiplier,
+							width,
+							depth-1
+						) )
+						.forEach( c => {
+							let childNode = document.createElement('li')
+							childNode.appendChild(c)
+							tree.appendChild(childNode)
+						} )
+				}
+				container.appendChild(root)
+				container.appendChild(tree)
+				return container
+			}
+			document.body.appendChild(makeTree())
+		</script>
+	</body>
+</html>
