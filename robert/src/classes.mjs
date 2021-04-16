@@ -184,18 +184,10 @@ export class CylinderCharacter extends Character{
 		this._rotated = false;
 		this._movements = {
 			e: _ => {},
-			s: _ => {
-				this.x += this._rotated
-					? -1/this._animationDuration
-					: +1/this._animationDuration
-			},
-			f: _ => {
-				this.mesh.rotateY(Math.PI/this._animationDuration)
-				if(this.lastFrame){
-					this._rotated = !this._rotated
-					this.x = this.x
-				}
-			},
+			s: this.step,
+			S: _ => this.step(true),
+			f: this.rotate,
+			F: this.rotate,
 		}
 		this.mesh.position.y = 30;
 	}
@@ -212,6 +204,18 @@ export class CylinderCharacter extends Character{
 		this.mesh?.lookAt(0,30,0)
 		if(!this._rotated)
 			this.mesh?.rotateY(Math.PI)
+	}
+	step(reversed=false){
+		this.x += this._rotated ^ reversed
+			? -1/this._animationDuration
+			: +1/this._animationDuration
+	}
+	rotate(){
+		this.mesh.rotateY(Math.PI/this._animationDuration)
+		if(this.lastFrame){
+			this._rotated = !this._rotated
+			this.x = this.x
+		}
 	}
 	static async fromImages(still=[],walking=[],radius){
 		for(let i=0; i<still.length; i++)
