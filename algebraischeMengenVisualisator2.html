@@ -16,30 +16,107 @@
 		</script>
 	</head>
 	<body>
+		<canvas id='c'></canvas>
+		<canvas id='hc'></canvas>
 		<table>
 			<tr>
 				<td>Expression</td>
-				<td><input type="text" id='expression' value='y^2-x*(x-1)*(x+1)' onchange='calc()'/></td>
+				<td><input type="text" id='expression' list="expression-list" value='y^2-x*(x-1)*(x+1)' onchange='calc()'/></td>
 			</tr>
 			<tr>
 				<td>Scale</td>
 				<td><input type="range" id='scale' value='40' min='10' max='100' step='5' onchange='scale=[parseInt(this.value),parseInt(this.value)]; calc()'/></td>
 			</tr>
 			<tr>
+				<td>Resolution</td>
+				<td><input type="range" id='resolution' value='1' min='1' max='10' step='0.25' onchange="calc()"/></td>
+				<td>resolution of real image. Smaller is better, but uses more resources</td>
+			</tr>
+			<tr>
 				<td>Step</td>
-				<td><input type="range" id='step' value='5' min='1' max='20' step='1' /></td>
+				<td><input type="range" id='step' value='5' min='1' max='40' step='1' /></td>
+				<td>resolution of complex image (when hovering). Smaller is better, but uses more resources</td>
 			</tr>
 			<tr>
 				<td>Tolerance</td>
 				<td><input type="range" id='tolerance' value='0.1' min='0.025' max='0.5' step='0.025' onchange='calc()' /></td>
+				<td>Radius for which values around a zero are colored</td>
+			</tr>
+			<tr>
+				<td>Variables</td>
+				<td>
+					<tr>
+						<td>a</td>
+						<td><input id="var_a" type="number" value="1" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>b</td>
+						<td><input id="var_b" type="number" value="0" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>c</td>
+						<td><input id="var_c" type="number" value="0" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>d</td>
+						<td><input id="var_d" type="number" value="0" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>f</td>
+						<td><input id="var_f" type="number" value="1" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>g</td>
+						<td><input id="var_g" type="number" value="0" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>h</td>
+						<td><input id="var_h" type="number" value="1" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>j</td>
+						<td><input id="var_j" type="number" value="1" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>k</td>
+						<td><input id="var_k" type="number" value="0" step="0.5" onchange="calc()"/></td>
+					</tr>
+					<tr>
+						<td>l</td>
+						<td><input id="var_l" type="number" value="1" step="0.5" onchange="calc()"/></td>
+					</tr>
+				</td>
 			</tr>
 		</table>
-		This Graph shows the real solutions. For complex solutions move the
-		cursor over the graph and you can another graph that that moves
-		from the point which your curor hovers over in both imaginary coordinates.
-		<br>
-		<canvas id='c'></canvas>
-		<canvas id='hc'></canvas>
+		<p>
+			This Graph shows the real solutions. For complex solutions move the
+			cursor over the graph and you can another graph that that moves
+			from the point which your cursor hovers over in both imaginary coordinates.
+		</p>
+		<table>
+			<tr>
+				<td>Elliptic Curve (general)</td>
+				<td>a*x^3+b*x^2*y+c*x*y^2+d*y^3+f*x^2+g*x*y+h*y^2+j*x+k*y+l</td>
+			</tr>
+			<tr>
+				<td>Weierstrass Normal Form (classic)</td>
+				<td>y^2-4*x^3+a*x+b</td>
+			</tr>
+			<tr>
+				<td>Weierstrass Normal Form (general/modified)</td>
+				<td>y^2-x^3-a*x^2-b*x-c</td>
+			</tr>
+		</table>
+		<datalist id="expression-list">
+			<option value="y^2-4*x^3+a*x+b">
+			<option value="y^2-x^3-a*x^2-b*x-c">
+			<option value="a*x^3+b*x^2*y+c*x*y^2+d*y^3+f*x^2+g*x*y+h*y^2+j*x+k*y+l">
+		</datalist>
+		<footer>
+			© <a href="http://github.com/quoteme">Luca Leon Happel</a> 2020-2021
+			<br>
+			<a href="https://quoteme.github.io/">https://quoteme.github.io/</a>
+		</footer>
 		<script type="text/javascript">
 			const c = document.getElementById('c');
 				c.width = 400;
@@ -57,12 +134,21 @@
 			const eq = document.getElementById('expression');
 			const to = document.getElementById('tolerance');
 
+			const getVariables = _ => Object.fromEntries(
+				['a','b','c','d','f','g','h','j','k','l']
+				.map(v => [v,parseFloat(document.getElementById(`var_${v}`).value)])
+			)
+
+			const replaceVariablesInExpression = (e,v) => Object
+				.entries(v)
+				.reduce((a,[s,v])=>a.replace(s,v),e)
+
 			c.onmousemove =
 					({ offsetX: x,
 					   offsetY: y,
-					   pageX  : px,
-					   pageY  : py,}) => {
-				let margin = 15;
+					   clientX  : px,
+					   clientY  : py,}) => {
+				let margin = 35;
 				hc.style.display = 'block';
 				hc.style.left = `${px+margin}px`;
 				hc.style.top = `${py+margin}px`;
@@ -109,15 +195,18 @@
 					canvas=c,
 					context=ctx,
 					scope=(x,y)=>({x: x, y: y}),
-					step=[1,1],
-					tolerance=to.value)=>{
+					step=[
+						parseFloat(document.getElementById("resolution").value),
+						parseFloat(document.getElementById("resolution").value)],
+					tolerance=to.value,
+					variables=getVariables())=>{
 				context.clearRect(
 					-canvas.width/2,
 					-canvas.height/2,
 					+canvas.width,
 					+canvas.height);
 				grid(context);
-				let code = math.compile(expression);
+				let code = math.compile(replaceVariablesInExpression(expression,variables));
 				for( let x=-canvas.width/2; x<canvas.width/2; x+=step[0] ){
 					for( let y=-canvas.height/2; y<canvas.height/2; y+=step[1] ){
 						let val = math.abs(code.evaluate(scope(x/scale[0],y/scale[1])))
