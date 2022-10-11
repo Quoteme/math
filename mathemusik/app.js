@@ -58,6 +58,12 @@ var functions = [];
 var playing = false;
 var updated = false; // track, if an update occured
 
+const onWindowResize = () => {
+  c.width = window.innerWidth;
+  c.height = window.innerHeight;
+  render();
+}
+
 const changeStep = (e) => {
 	step = e;
 }
@@ -350,3 +356,6 @@ function download(filename, text) {
 
 	document.body.removeChild(element);
 }
+
+onWindowResize();
+window.addEventListener('resize', onWindowResize, false);
